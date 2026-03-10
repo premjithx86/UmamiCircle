@@ -11,7 +11,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md) (0bfad9d)
 
 ## Phase 2: Core API and Security
-- [ ] Task: Implement Core Middleware
+- [x] Task: Implement Core Middleware (a73f41a)
     - [ ] Configure `cors` and `helmet.js`.
 - [ ] Task: Integrate Firebase Authentication
     - [ ] Initialize Firebase Admin SDK.
