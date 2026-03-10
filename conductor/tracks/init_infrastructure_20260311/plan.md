@@ -4,7 +4,7 @@
 - [x] Task: Initialize Node.js and Express.js (0305e41)
     - [ ] Run `npm init` and install dependencies: `express`, `mongoose`, `cors`, `helmet`, `dotenv`.
     - [ ] Create initial server file `server.js` with basic setup.
-- [ ] Task: Configure Project Structure
+- [~] Task: Configure Project Structure
     - [ ] Set up directory structure: `src/`, `src/routes/`, `src/models/`, `src/controllers/`, `src/middleware/`.
 - [ ] Task: Connect to MongoDB
     - [ ] Configure Mongoose connection to MongoDB.
