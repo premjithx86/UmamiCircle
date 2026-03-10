@@ -1,0 +1,1 @@
+# Initial Concept\n\nA food-focused social media web app called UmamiCircle using the MERN stack (MongoDB, Express, React, Node.js) with Tailwind CSS, Firebase Authentication, Socket.io for real-time messaging, Cloudinary for image storage, and a separate admin panel. Users can share food posts and recipes with AI-powered content moderation.
