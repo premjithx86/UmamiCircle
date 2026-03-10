@@ -1,7 +1,7 @@
 # Implementation Plan: Initialize Project Infrastructure and Core Backend API Structure
 
 ## Phase 1: Environment and Project Scaffolding
-- [ ] Task: Initialize Node.js and Express.js
+- [~] Task: Initialize Node.js and Express.js
     - [ ] Run `npm init` and install dependencies: `express`, `mongoose`, `cors`, `helmet`, `dotenv`.
     - [ ] Create initial server file `server.js` with basic setup.
 - [ ] Task: Configure Project Structure
