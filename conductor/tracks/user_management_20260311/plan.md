@@ -7,7 +7,7 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: User Sync and Profile API
-- [ ] Task: Implement User Sync Endpoint
+- [~] Task: Implement User Sync Endpoint
     - [ ] Create `src/routes/userRoutes.js`.
     - [ ] Implement `POST /sync` to create/get a user from MongoDB based on Firebase UID.
 - [ ] Task: Implement Profile Management

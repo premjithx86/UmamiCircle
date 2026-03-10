@@ -1,6 +1,6 @@
 const request = require("supertest");
 const express = require("express");
-const authMiddleware = require("../src/middleware/auth");
+const { authMiddleware } = require("../src/middleware/auth");
 
 const app = express();
 app.use(express.json());
