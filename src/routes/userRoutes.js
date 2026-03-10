@@ -49,7 +49,7 @@ router.put("/me", authMiddleware, stripRole, async (req, res) => {
     const user = await User.findOneAndUpdate(
       { firebaseUID: req.user.uid },
       { $set: updates },
-      { new: true, runValidators: true }
+      { returnDocument: "after", runValidators: true }
     );
     if (!user) {
       return res.status(404).json({ error: "User not found" });
