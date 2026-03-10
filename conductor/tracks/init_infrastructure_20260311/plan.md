@@ -13,7 +13,7 @@
 ## Phase 2: Core API and Security
 - [x] Task: Implement Core Middleware (a73f41a)
     - [ ] Configure `cors` and `helmet.js`.
-- [ ] Task: Integrate Firebase Authentication
+- [~] Task: Integrate Firebase Authentication
     - [ ] Initialize Firebase Admin SDK.
     - [ ] Create authentication middleware for verifying Firebase tokens.
 - [ ] Task: Implement Initial API Routes
