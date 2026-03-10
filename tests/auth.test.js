@@ -14,3 +14,11 @@ describe("Auth Middleware", () => {
     expect(res.statusCode).toEqual(401);
   });
 });
+
+  it("should return 200 Success if a token is provided", async () => {
+    const res = await request(app)
+      .get("/protected")
+      .set("Authorization", "Bearer valid-token");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.message).toEqual("Success");
+  });

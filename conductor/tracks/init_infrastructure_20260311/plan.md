@@ -16,7 +16,7 @@
 - [x] Task: Integrate Firebase Authentication (f7bbbdf)
     - [ ] Initialize Firebase Admin SDK.
     - [ ] Create authentication middleware for verifying Firebase tokens.
-- [ ] Task: Implement Initial API Routes
+- [~] Task: Implement Initial API Routes
     - [ ] Create health check route.
     - [ ] Create basic user profile routes.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
