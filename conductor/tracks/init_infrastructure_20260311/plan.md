@@ -20,3 +20,6 @@
     - [ ] Create health check route.
     - [ ] Create basic user profile routes.
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) (93765b7)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions (03c8b5a)
