@@ -1,7 +1,7 @@
 # Implementation Plan: User Management: Database Models and Authentication Integration
 
 ## Phase 1: Database Model and Schema
-- [~] Task: Create User Model
+- [x] Task: Create User Model (0fadda2)
     - [ ] Define Mongoose schema in `src/models/User.js`.
     - [ ] Add basic unit tests for the User model.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
