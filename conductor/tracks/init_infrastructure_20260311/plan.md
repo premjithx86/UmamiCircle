@@ -6,7 +6,7 @@
     - [ ] Create initial server file `server.js` with basic setup.
 - [x] Task: Configure Project Structure (84d168d)
     - [ ] Set up directory structure: `src/`, `src/routes/`, `src/models/`, `src/controllers/`, `src/middleware/`.
-- [ ] Task: Connect to MongoDB
+- [~] Task: Connect to MongoDB
     - [ ] Configure Mongoose connection to MongoDB.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
