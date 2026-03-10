@@ -11,10 +11,21 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
     unique: true,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "other"],
+  },
+  country: {
+    type: String,
   },
   bio: {
     type: String,
@@ -23,6 +34,22 @@ const UserSchema = new mongoose.Schema({
   profilePicUrl: {
     type: String,
     default: "",
+  },
+  followers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
+  following: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
+  blocked: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
+  isBlocked: {
+    type: Boolean,
+    default: false,
   },
   role: {
     type: String,

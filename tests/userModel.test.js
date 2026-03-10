@@ -20,6 +20,7 @@ describe("User Model", () => {
       firebaseUID: "test-uid-123",
       email: "test@example.com",
       username: "testuser",
+      name: "Test User",
       bio: "Hello, I am a test user.",
       profilePicUrl: "http://example.com/pic.jpg",
       role: "user"
