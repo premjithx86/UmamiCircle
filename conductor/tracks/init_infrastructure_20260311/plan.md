@@ -10,7 +10,7 @@
     - [ ] Configure Mongoose connection to MongoDB.
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md) (0bfad9d)
 
-## Phase 2: Core API and Security
+## Phase 2: Core API and Security [checkpoint: 93765b7]
 - [x] Task: Implement Core Middleware (a73f41a)
     - [ ] Configure `cors` and `helmet.js`.
 - [x] Task: Integrate Firebase Authentication (f7bbbdf)
@@ -19,4 +19,4 @@
 - [x] Task: Implement Initial API Routes (7dab20b)
     - [ ] Create health check route.
     - [ ] Create basic user profile routes.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) (93765b7)
