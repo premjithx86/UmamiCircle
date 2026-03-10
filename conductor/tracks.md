@@ -6,5 +6,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Initialize Project Infrastructure and Core Backend API Structure**
   *Link: [./tracks/init_infrastructure_20260311/](./tracks/init_infrastructure_20260311/)*
-- [x] **Track: User Management: Database Models and Authentication Integration**
+- [x] ~~**Track: User Management: Database Models and Authentication Integration**~~ (Archived)
   *Link: [./tracks/user_management_20260311/](./tracks/user_management_20260311/)*
