@@ -33,6 +33,25 @@ describe("Recipe Model Test", () => {
     expect(savedRecipe.ingredients.length).toBe(3);
   });
 
+  it("should support likes and commentsCount", async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const recipe = new Recipe({
+      user: new mongoose.Types.ObjectId(),
+      title: "Likes Test",
+      description: "Test description",
+      ingredients: ["item"],
+      steps: ["step"],
+      imageUrl: "http://example.com/pic.jpg",
+      imageHash: "hash-likes",
+      likes: [userId],
+      commentsCount: 5
+    });
+    const savedRecipe = await recipe.save();
+    expect(savedRecipe.likes).toBeDefined();
+    expect(savedRecipe.likes[0]).toEqual(userId);
+    expect(savedRecipe.commentsCount).toBe(5);
+  });
+
   it("should fail to save recipe without required fields", async () => {
     const recipeWithoutRequiredField = new Recipe({ title: "No fields" });
     let err;

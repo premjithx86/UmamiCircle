@@ -33,6 +33,21 @@ describe("User Model", () => {
     expect(savedUser.username).toBe(userData.username);
   });
 
+  it("should support bookmarks", async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const recipeId = new mongoose.Types.ObjectId();
+    const user = new User({
+      firebaseUID: "bookmarks-uid",
+      email: "bookmarks@example.com",
+      username: "bookmarker",
+      name: "Bookmarker",
+      bookmarks: [{ targetType: "Recipe", targetId: recipeId }]
+    });
+    const savedUser = await user.save();
+    expect(savedUser.bookmarks).toBeDefined();
+    expect(savedUser.bookmarks[0].targetId).toEqual(recipeId);
+  });
+
   it("should fail to create a user without required fields", async () => {
     const userWithoutRequiredFields = new User({ username: "test" });
     let err;

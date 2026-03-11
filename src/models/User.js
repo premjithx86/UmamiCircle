@@ -51,6 +51,18 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  bookmarks: [{
+    targetType: {
+      type: String,
+      enum: ["Post", "Recipe"],
+      required: true,
+    },
+    targetId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      refPath: "bookmarks.targetType",
+    },
+  }],
   role: {
     type: String,
     enum: ["user", "admin"],

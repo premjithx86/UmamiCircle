@@ -37,6 +37,14 @@ const RecipeSchema = new mongoose.Schema({
     type: String,
     trim: true,
   }],
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
+  commentsCount: {
+    type: Number,
+    default: 0,
+  },
   prepTime: {
     type: String, // e.g., "30 mins"
   },
