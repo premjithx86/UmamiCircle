@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from './Button';
+import { Button } from './Button';
 
 const ProfileHeader = ({ user, isOwnProfile, isFollowing, onFollowToggle, onEditProfile }) => {
   if (!user) return null;

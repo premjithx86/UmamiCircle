@@ -1,6 +1,6 @@
 import React from 'react';
-import Modal from './Modal';
-import Button from './Button';
+import { Modal } from './Modal';
+import { Button } from './Button';
 
 const BlockModal = ({ isOpen, onClose, onConfirm, username, isBlocking }) => {
   const actionText = isBlocking ? 'Block' : 'Unblock';

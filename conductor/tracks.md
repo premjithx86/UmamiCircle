@@ -23,7 +23,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Content Engagement UI: Post and Recipe Display/Interaction**
+- [~] **Track: Content Engagement UI: Post and Recipe Display/Interaction**
   *Link: [./tracks/content_engagement_ui_20260311/](./tracks/content_engagement_ui_20260311/)*
 
 ---

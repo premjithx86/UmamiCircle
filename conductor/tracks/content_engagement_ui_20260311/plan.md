@@ -1,7 +1,7 @@
 # Implementation Plan: Content Engagement UI
 
 ## Phase 1: Detail Views
-- [ ] Task: Build Post Detail Page
+- [~] Task: Build Post Detail Page
     - Design image viewer and sidebar for comments/details.
 - [ ] Task: Build Recipe Detail Page
     - Create structured layout for ingredients and steps.

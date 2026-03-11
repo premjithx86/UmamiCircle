@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Input from './Input';
-import Button from './Button';
+import { Input } from './Input';
+import { Button } from './Button';
 
 const EditProfileForm = ({ user, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({

@@ -22,4 +22,4 @@ const Button = ({ children, onClick, type = 'button', variant = 'primary', class
   );
 };
 
-export default Button;
+export { Button };

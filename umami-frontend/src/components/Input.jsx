@@ -25,4 +25,4 @@ const Input = ({ label, id, type = 'text', value, onChange, placeholder, error, 
   );
 };
 
-export default Input;
+export { Input };

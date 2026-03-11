@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from './Button';
+import { Button } from './Button';
 
 const UserList = ({ users = [], onFollowToggle, emptyMessage = "No users found." }) => {
   if (users.length === 0) {
