@@ -37,7 +37,7 @@
     - [ ] Create `GET /api/notifications`.
     - [ ] Create `PUT /api/notifications/read/:id`.
     - [ ] Create `PUT /api/notifications/read-all`.
-- [ ] Task: Integrate Socket.io for Real-time Alerts
+- [x] Task: Integrate Socket.io for Real-time Alerts (3ade71c)
     - [ ] Initialize Socket.io on the server.
     - [ ] Create a notification emitter service.
     - [ ] Connect social events (like, comment, follow) to the emitter.
