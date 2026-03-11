@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import ProfileHeader from '../components/ProfileHeader';
-import ProfileTabs from '../components/ProfileTabs';
-import ContentGrid from '../components/ContentGrid';
+import { ProfileHeader } from '../components/ProfileHeader';
+import { ProfileTabs } from '../components/ProfileTabs';
+import { ContentGrid } from '../components/ContentGrid';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Modal from '../components/Modal';
-import EditProfileForm from '../components/EditProfileForm';
-import BlockModal from '../components/BlockModal';
-import ReportForm from '../components/ReportForm';
+import { EditProfileForm } from '../components/EditProfileForm';
+import { BlockModal } from '../components/BlockModal';
+import { ReportForm } from '../components/ReportForm';
 
 const Profile = () => {
   const { username } = useParams();
@@ -108,4 +108,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export { Profile };

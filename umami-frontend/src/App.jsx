@@ -6,7 +6,7 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import Notifications from './pages/Notifications';
-import Profile from './pages/Profile';
+import { Profile } from './pages/Profile';
 
 function App() {
   return (

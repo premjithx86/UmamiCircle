@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import UserList from './UserList';
+import { UserList } from './UserList';
 
 describe('UserList Component', () => {
   const mockUsers = [

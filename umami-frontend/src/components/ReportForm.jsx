@@ -88,4 +88,4 @@ const ReportForm = ({ onSubmit, onCancel }) => {
   );
 };
 
-export default ReportForm;
+export { ReportForm };

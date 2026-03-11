@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import Profile from './Profile';
+import { Profile } from './Profile';
 
 describe('Profile Page', () => {
   it('renders loading state initially', () => {

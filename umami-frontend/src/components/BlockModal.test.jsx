@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import BlockModal from './BlockModal';
+import { BlockModal } from './BlockModal';
 
 describe('BlockModal Component', () => {
   it('renders block confirmation text correctly', () => {

@@ -70,4 +70,4 @@ const ProfileHeader = ({ user, isOwnProfile, isFollowing, onFollowToggle, onEdit
   );
 };
 
-export default ProfileHeader;
+export { ProfileHeader };

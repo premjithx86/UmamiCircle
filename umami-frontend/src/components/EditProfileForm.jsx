@@ -77,4 +77,4 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
   );
 };
 
-export default EditProfileForm;
+export { EditProfileForm };

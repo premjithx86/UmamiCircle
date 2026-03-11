@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import ProfileHeader from './ProfileHeader';
+import { ProfileHeader } from './ProfileHeader';
 
 describe('ProfileHeader Component', () => {
   const mockUser = {

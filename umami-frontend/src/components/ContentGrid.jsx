@@ -31,4 +31,4 @@ const ContentGrid = ({ items = [], emptyMessage = "No content yet." }) => {
   );
 };
 
-export default ContentGrid;
+export { ContentGrid };

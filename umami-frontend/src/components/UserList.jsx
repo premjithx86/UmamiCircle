@@ -43,4 +43,4 @@ const UserList = ({ users = [], onFollowToggle, emptyMessage = "No users found."
   );
 };
 
-export default UserList;
+export { UserList };

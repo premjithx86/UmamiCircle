@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import ReportForm from './ReportForm';
+import { ReportForm } from './ReportForm';
 
 describe('ReportForm Component', () => {
   it('renders report reasons correctly', () => {

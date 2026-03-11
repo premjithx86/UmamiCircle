@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import ContentGrid from './ContentGrid';
+import { ContentGrid } from './ContentGrid';
 
 describe('ContentGrid Component', () => {
   const mockItems = [

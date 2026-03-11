@@ -39,4 +39,4 @@ const BlockModal = ({ isOpen, onClose, onConfirm, username, isBlocking }) => {
   );
 };
 
-export default BlockModal;
+export { BlockModal };
