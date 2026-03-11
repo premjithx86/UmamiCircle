@@ -24,7 +24,7 @@
 - [x] Task: Implement Like/Unlike Routes (0d1fc42)
     - [ ] Create `POST /api/posts/like/:id` and `POST /api/recipes/like/:id`.
     - [ ] Implement toggle logic for likes.
-- [ ] Task: Implement Commenting Routes
+- [x] Task: Implement Commenting Routes (7ffe29d)
     - [ ] Create `POST /api/comments` for both Posts and Recipes.
     - [ ] Create `GET /api/comments/:type/:id`.
     - [ ] Create `DELETE /api/comments/:id`.
