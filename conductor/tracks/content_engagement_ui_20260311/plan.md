@@ -22,5 +22,5 @@
     - Make tags on posts/recipes clickable for search redirection.
 
 ## Phase: Final Verification
-- [ ] Task: Mobile view optimization for long recipes
+- [~] Task: Mobile view optimization for long recipes
 - [ ] Task: Verification of engagement counters accuracy

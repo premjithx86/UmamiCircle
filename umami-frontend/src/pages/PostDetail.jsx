@@ -3,11 +3,15 @@ import { useParams, Link } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
 import { TagList } from '../components/TagList';
+import { EngagementBar } from '../components/EngagementBar';
+import { CommentSection } from '../components/CommentSection';
+import { ShareModal } from '../components/ShareModal';
 
 export const PostDetail = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -25,8 +29,12 @@ export const PostDetail = () => {
         caption: 'Delicious food from today!',
         tags: ['food', 'delicious', 'yummy'],
         createdAt: new Date().toISOString(),
-        likesCount: 24,
-        commentsCount: 5,
+        likes: Array(24).fill('u1'),
+        isLiked: false,
+        isBookmarked: false,
+        comments: [
+          { _id: 'c1', user: { username: 'foodie', avatar: '' }, content: 'Looks so good!', createdAt: new Date().toISOString() },
+        ],
       });
       setLoading(false);
     }, 500);
@@ -44,21 +52,23 @@ export const PostDetail = () => {
     return <div className="text-center py-20 text-gray-500">Post not found.</div>;
   }
 
+  const shareUrl = `${window.location.origin}/posts/${id}`;
+
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500" data-testid="post-detail">
       <Card className="overflow-hidden">
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row h-full md:max-h-[700px]">
           {/* Image Section */}
-          <div className="md:w-3/5 bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700">
+          <div className="md:w-3/5 bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 overflow-hidden">
             <img
               src={post.imageUrl}
               alt="Post image"
-              className="w-full h-auto max-h-[600px] object-contain"
+              className="w-full h-full object-contain"
             />
           </div>
 
           {/* Sidebar Section */}
-          <div className="md:w-2/5 flex flex-col h-full max-h-[600px]">
+          <div className="md:w-2/5 flex flex-col h-full overflow-hidden">
             {/* Header */}
             <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-3">
               <img
@@ -74,8 +84,8 @@ export const PostDetail = () => {
               </div>
             </div>
 
-            {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Content and Comments Area */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar">
               <div className="flex items-start space-x-3">
                 <img
                   src={post.user.avatar || 'https://via.placeholder.com/40'}
@@ -94,27 +104,44 @@ export const PostDetail = () => {
                 </div>
               </div>
 
-              {/* Placeholder for real comments */}
-              <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
-                <p className="text-xs text-gray-400 italic">Comments implementation coming in Phase 2...</p>
-              </div>
+              <CommentSection
+                comments={post.comments}
+                onAddComment={(content) => {
+                  const newComment = {
+                    _id: Date.now().toString(),
+                    user: { username: 'testuser', avatar: '' },
+                    content,
+                    createdAt: new Date().toISOString()
+                  };
+                  setPost({ ...post, comments: [newComment, ...post.comments] });
+                }}
+              />
             </div>
 
-            {/* Engagement Bar Placeholder */}
-            <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2" data-testid="engagement-bar-placeholder">
-              <div className="flex space-x-4">
-                <span className="text-xl">🤍</span>
-                <span className="text-xl">💬</span>
-                <span className="text-xl">🔗</span>
-                <span className="text-xl ml-auto">🔖</span>
-              </div>
-              <p className="text-sm font-bold text-gray-900 dark:text-white">
-                {post.likesCount} likes
-              </p>
+            {/* Engagement Bar */}
+            <div className="p-4 border-t border-gray-200 dark:border-gray-700" data-testid="engagement-bar-placeholder">
+              <EngagementBar
+                isLiked={post.isLiked}
+                isBookmarked={post.isBookmarked}
+                likesCount={post.likes.length}
+                onLikeToggle={() => setPost({ 
+                  ...post, 
+                  isLiked: !post.isLiked,
+                  likes: post.isLiked ? post.likes.slice(0, -1) : [...post.likes, 'u1']
+                })}
+                onShare={() => setIsShareModalOpen(true)}
+                onBookmarkToggle={() => setPost({ ...post, isBookmarked: !post.isBookmarked })}
+              />
             </div>
           </div>
         </div>
       </Card>
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        url={shareUrl}
+      />
     </div>
   );
 };

@@ -3,11 +3,15 @@ import { useParams, Link } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
 import { TagList } from '../components/TagList';
+import { EngagementBar } from '../components/EngagementBar';
+import { CommentSection } from '../components/CommentSection';
+import { ShareModal } from '../components/ShareModal';
 
 export const RecipeDetail = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [recipe, setRecipe] = useState(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -40,8 +44,10 @@ export const RecipeDetail = () => {
         prepTime: '30 mins',
         difficulty: 'Easy',
         createdAt: new Date().toISOString(),
-        likesCount: 150,
-        commentsCount: 12,
+        likes: Array(150).fill('u1'),
+        isLiked: false,
+        isBookmarked: false,
+        comments: [],
       });
       setLoading(false);
     }, 500);
@@ -58,6 +64,8 @@ export const RecipeDetail = () => {
   if (!recipe) {
     return <div className="text-center py-20 text-gray-500">Recipe not found.</div>;
   }
+
+  const shareUrl = `${window.location.origin}/recipes/${id}`;
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500" data-testid="recipe-detail">
@@ -147,32 +155,53 @@ export const RecipeDetail = () => {
           </section>
         </div>
 
-        {/* Right Column: Engagement and Meta */}
+        {/* Right Column: Engagement and Comments */}
         <div className="space-y-6">
-          <Card className="p-6 sticky top-24">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Engagement</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-700">
-                <span className="text-gray-600 dark:text-gray-400 font-medium">Likes</span>
-                <span className="font-bold text-gray-900 dark:text-white">{recipe.likesCount}</span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-700">
-                <span className="text-gray-600 dark:text-gray-400 font-medium">Comments</span>
-                <span className="font-bold text-gray-900 dark:text-white">{recipe.commentsCount}</span>
-              </div>
-              
-              <div className="pt-4 flex flex-col space-y-3" data-testid="engagement-bar-placeholder">
-                <div className="flex justify-around text-2xl border-t border-gray-100 dark:border-gray-700 pt-4">
-                  <button className="hover:scale-110 transition-transform">🤍</button>
-                  <button className="hover:scale-110 transition-transform">💬</button>
-                  <button className="hover:scale-110 transition-transform">🔗</button>
-                  <button className="hover:scale-110 transition-transform">🔖</button>
-                </div>
-              </div>
+          <Card className="p-6 sticky top-24 space-y-6">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">
+                Engagement
+              </h3>
+              <EngagementBar
+                isLiked={recipe.isLiked}
+                isBookmarked={recipe.isBookmarked}
+                likesCount={recipe.likes.length}
+                onLikeToggle={() => setRecipe({ 
+                  ...recipe, 
+                  isLiked: !recipe.isLiked,
+                  likes: recipe.isLiked ? recipe.likes.slice(0, -1) : [...recipe.likes, 'u1']
+                })}
+                onShare={() => setIsShareModalOpen(true)}
+                onBookmarkToggle={() => setRecipe({ ...recipe, isBookmarked: !recipe.isBookmarked })}
+              />
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">
+                Comments
+              </h3>
+              <CommentSection
+                comments={recipe.comments}
+                onAddComment={(content) => {
+                  const newComment = {
+                    _id: Date.now().toString(),
+                    user: { username: 'testuser', avatar: '' },
+                    content,
+                    createdAt: new Date().toISOString()
+                  };
+                  setRecipe({ ...recipe, comments: [newComment, ...recipe.comments] });
+                }}
+              />
             </div>
           </Card>
         </div>
       </div>
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        url={shareUrl}
+      />
     </div>
   );
 };
