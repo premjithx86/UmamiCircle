@@ -24,4 +24,4 @@
 
 ## Phase: Final Verification
 - [x] Task: Verification of Profile Routing (`/u/:username`) (faf045c)
-- [ ] Task: Cross-browser testing of profile layouts
+- [x] Task: Cross-browser testing of profile layouts (28754ab)
