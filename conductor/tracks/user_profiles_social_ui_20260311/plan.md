@@ -18,7 +18,7 @@
 ## Phase 3: Social Interactions and Feedback
 - [x] Task: Real-time Social Feedback (2cf6217)
     - Implement immediate UI updates for social actions using optimistic UI patterns.
-- [ ] Task: Blocking and Reporting UI
+- [x] Task: Blocking and Reporting UI (642c43b)
     - Implement Block/Unblock buttons with confirmation modals.
     - Build the Report User interface.
 
