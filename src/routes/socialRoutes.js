@@ -107,11 +107,10 @@ router.post("/block/:id", authMiddleware, async (req, res) => {
 
     if (!currentUser.blocked.includes(targetUserId)) {
       currentUser.blocked.push(targetUserId);
-      
+
       // Auto-unfollow when blocking
       currentUser.following = currentUser.following.filter(id => id.toString() !== targetUserId);
       await currentUser.save();
-
       // Also remove current user from target's following if they followed
       await User.findByIdAndUpdate(targetUserId, {
         $pull: { following: currentUser._id, followers: currentUser._id }
