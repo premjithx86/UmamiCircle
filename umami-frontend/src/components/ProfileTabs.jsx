@@ -2,8 +2,8 @@ import React from 'react';
 
 const ProfileTabs = ({ tabs, activeTab, onTabChange }) => {
   return (
-    <div className="border-b border-gray-200 dark:border-gray-700">
-      <nav className="-mb-px flex justify-center space-x-8" aria-label="Tabs">
+    <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto no-scrollbar">
+      <nav className="-mb-px flex justify-center min-w-max md:min-w-0 space-x-8 px-4" aria-label="Tabs">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
