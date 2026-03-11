@@ -23,5 +23,5 @@
     - Build the Report User interface.
 
 ## Phase: Final Verification
-- [ ] Task: Verification of Profile Routing (`/u/:username`)
+- [x] Task: Verification of Profile Routing (`/u/:username`) (faf045c)
 - [ ] Task: Cross-browser testing of profile layouts
