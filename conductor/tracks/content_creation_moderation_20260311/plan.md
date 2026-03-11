@@ -11,14 +11,14 @@
     - [x] Implement image hash deduplication logic.
 
 ## Phase 2: Moderation Logic & Image Pipeline
-- [ ] Task: Implement Image Moderation Pipeline
-    - [ ] Create `src/middleware/uploadMiddleware.js` using `multer`.
-    - [ ] Implement `checkImageSafety` using Sightengine.
-    - [ ] Implement `verifyFoodContent` using Google Cloud Vision.
-    - [ ] Integrate Cloudinary for image storage.
-- [ ] Task: Implement Text Moderation
-    - [ ] Set up `obscenity` package for profanity filtering.
-    - [ ] Implement `validateFoodRelevance` using Groq API.
+- [x] Task: Implement Image Moderation Pipeline (773195)
+    - [x] Create `src/middleware/uploadMiddleware.js` using `multer`.
+    - [x] Implement `checkImageSafety` using Sightengine.
+    - [x] Implement `verifyFoodContent` using Google Cloud Vision.
+    - [x] Integrate Cloudinary for image storage.
+- [x] Task: Implement Text Moderation (773195)
+    - [x] Set up `obscenity` package for profanity filtering.
+    - [x] Implement `validateFoodRelevance` using Groq API.
 
 ## Phase 3: Content Creation API
 - [ ] Task: Implement Create Post Endpoint
