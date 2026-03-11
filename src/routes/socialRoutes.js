@@ -166,4 +166,57 @@ router.post("/report/:type/:id", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * Bookmark or Unbookmark a post/recipe
+ */
+router.post("/bookmark/:type/:id", authMiddleware, async (req, res) => {
+  try {
+    const { type, id } = req.params;
+    const currentUid = req.user.uid;
+
+    if (!["Post", "Recipe"].includes(type)) {
+      return res.status(400).json({ error: "Invalid bookmark type" });
+    }
+
+    const user = await User.findOne({ firebaseUID: currentUid });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const bookmarkIndex = user.bookmarks.findIndex(
+      (b) => b.targetType === type && b.targetId.toString() === id
+    );
+
+    if (bookmarkIndex === -1) {
+      // Add bookmark
+      user.bookmarks.push({ targetType: type, targetId: id });
+      await user.save();
+      return res.status(200).json({ message: "Item bookmarked successfully" });
+    } else {
+      // Remove bookmark
+      user.bookmarks.splice(bookmarkIndex, 1);
+      await user.save();
+      return res.status(200).json({ message: "Bookmark removed successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Generate share link for a post or recipe
+ */
+router.post("/share/:type/:id", authMiddleware, async (req, res) => {
+  try {
+    const { type, id } = req.params;
+    // In a real app, this might track shares or generate unique short links
+    // For now, we return the direct link based on product guidelines
+    const baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const path = type.toLowerCase() === "recipe" ? "recipes" : "posts";
+    const shareUrl = `${baseUrl}/${path}/${id}`;
+
+    res.status(200).json({ shareUrl, message: "Share link generated" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

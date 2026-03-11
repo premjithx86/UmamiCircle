@@ -117,4 +117,46 @@ describe("Social Routes Integration Tests", () => {
       expect(res.body.message).toMatch(/report/i);
     });
   });
+
+  describe("Bookmark/Share", () => {
+    it("should allow user1 to bookmark a post", async () => {
+      const dummyPostId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .post(`/api/social/bookmark/Post/${dummyPostId}`)
+        .set("Authorization", "Bearer uid-1");
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toMatch(/bookmarked/i);
+
+      const updatedUser1 = await User.findById(user1._id);
+      expect(updatedUser1.bookmarks[0].targetId.toString()).toBe(dummyPostId.toString());
+    });
+
+    it("should allow user1 to unbookmark a post", async () => {
+      const dummyPostId = new mongoose.Types.ObjectId();
+      user1.bookmarks.push({ targetType: "Post", targetId: dummyPostId });
+      await user1.save();
+
+      const res = await request(app)
+        .post(`/api/social/bookmark/Post/${dummyPostId}`)
+        .set("Authorization", "Bearer uid-1");
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toMatch(/removed/i);
+
+      const updatedUser1 = await User.findById(user1._id);
+      expect(updatedUser1.bookmarks.length).toBe(0);
+    });
+
+    it("should generate a share link", async () => {
+      const dummyPostId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .post(`/api/social/share/Post/${dummyPostId}`)
+        .set("Authorization", "Bearer uid-1");
+
+      expect(res.status).toBe(200);
+      expect(res.body.shareUrl).toBeDefined();
+      expect(res.body.shareUrl).toMatch(new RegExp(dummyPostId.toString()));
+    });
+  });
 });
