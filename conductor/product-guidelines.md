@@ -23,6 +23,7 @@
     - Posts: `/posts/:slug`
     - Recipes: `/recipes/:slug`
     - Profiles: `/u/:username`
+    - Messaging: `/messages`
 - **SEO Optimization:** Mandatory implementation of:
     - Standard Meta Tags
     - Open Graph
