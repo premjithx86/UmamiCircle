@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AdminProvider } from './context/AdminContext';
 import { AdminLayout } from './layouts/AdminLayout';
 import { Login } from './pages/Login';
+import { Dashboard } from './pages/Dashboard';
 
 // Placeholder components
-const Dashboard = () => <h1 className="text-2xl font-bold">Dashboard</h1>;
 const UserManagement = () => <h1 className="text-2xl font-bold">User Management</h1>;
 const ContentModeration = () => <h1 className="text-2xl font-bold">Content Moderation</h1>;
 const Reports = () => <h1 className="text-2xl font-bold">Reports</h1>;

@@ -11,7 +11,7 @@
 ## Phase 2: Admin Dashboard
 - [x] Task: Real-time Platform Metrics API (e263f6a)
     - Implement endpoints to aggregate platform stats.
-- [ ] Task: Build Dashboard UI
+- [~] Task: Build Dashboard UI
     - Design charts and cards for platform metrics (Total Users, Engagement).
 
 ## Phase 3: User Management System
