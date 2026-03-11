@@ -15,10 +15,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] ~~**Track: Social Features: Follow/Unfollow, Block/Report users, Like/Comment/Bookmark posts, Share posts, Notifications system**~~ (Archived)
   *Link: [./archive/social_features_notifications_20260311/](./archive/social_features_notifications_20260311/)*
 
----
-
-- [x] **Track: Frontend Foundation and UI System (React + Tailwind)**
-  *Link: [./tracks/frontend_foundation_20260311/](./tracks/frontend_foundation_20260311/)*
+- [x] ~~**Track: Frontend Foundation and UI System (React + Tailwind)**~~ (Archived)
+  *Link: [./archive/frontend_foundation_20260311/](./archive/frontend_foundation_20260311/)*
 
 ---
 
