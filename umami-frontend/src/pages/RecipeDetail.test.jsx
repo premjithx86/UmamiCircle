@@ -22,8 +22,14 @@ describe('RecipeDetail Page', () => {
     expect(screen.getByText(/Delicious test recipe description/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Ingredients/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Instructions/i })).toBeInTheDocument();
-    expect(screen.getByText(/Easy/i)).toBeInTheDocument();
-    expect(screen.getByText(/30 mins/i)).toBeInTheDocument();
+    
+    // Check for Difficulty, Time, Servings in their cards
+    expect(screen.getByText('Easy')).toBeInTheDocument();
+    expect(screen.getByText('30 mins')).toBeInTheDocument();
     expect(screen.getByText(/4 servings/i)).toBeInTheDocument();
+    
+    // Check for specific tags
+    expect(screen.getByText(/#dinner/i)).toBeInTheDocument();
+    expect(screen.getByText(/#healthy/i)).toBeInTheDocument();
   });
 });

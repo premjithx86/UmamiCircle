@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
+import { TagList } from '../components/TagList';
 
 export const PostDetail = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ export const PostDetail = () => {
         },
         imageUrl: 'https://via.placeholder.com/600',
         caption: 'Delicious food from today!',
+        tags: ['food', 'delicious', 'yummy'],
         createdAt: new Date().toISOString(),
         likesCount: 24,
         commentsCount: 5,
@@ -80,11 +82,12 @@ export const PostDetail = () => {
                   alt={post.user.username}
                   className="w-8 h-8 rounded-full object-cover"
                 />
-                <div className="space-y-1">
+                <div className="space-y-2">
                   <p className="text-sm">
                     <span className="font-bold mr-2 text-gray-900 dark:text-white">{post.user.username}</span>
                     <span className="text-gray-700 dark:text-gray-300">{post.caption}</span>
                   </p>
+                  <TagList tags={post.tags} />
                   <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">
                     {new Date(post.createdAt).toLocaleDateString()}
                   </p>

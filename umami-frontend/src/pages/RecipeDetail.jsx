@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
+import { TagList } from '../components/TagList';
 
 export const RecipeDetail = () => {
   const { id } = useParams();
@@ -23,6 +24,7 @@ export const RecipeDetail = () => {
         title: 'Test Recipe',
         description: 'Delicious test recipe description.',
         imageUrl: 'https://via.placeholder.com/800x400',
+        tags: ['dinner', 'easy', 'healthy'],
         ingredients: [
           '2 cups Flour',
           '1 cup Sugar',
@@ -108,9 +110,12 @@ export const RecipeDetail = () => {
         <div className="lg:col-span-2 space-y-8">
           <section>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Description</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              {recipe.description}
-            </p>
+            <div className="space-y-4">
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                {recipe.description}
+              </p>
+              <TagList tags={recipe.tags} />
+            </div>
           </section>
 
           <section>
