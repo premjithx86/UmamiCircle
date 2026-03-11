@@ -15,7 +15,7 @@
     - Design comment list and input field.
     - Implement "Delete Comment" for post owners.
 
-## Phase 3: Content Interaction Polish
+## Phase 3: Content Interaction Polish [checkpoint: 1e8934c]
 - [x] Task: Content Sharing UI (27f0dc6)
     - Implement social sharing options and link copy confirmation.
 - [x] Task: Tag and Search Integration (af8e1c3)
