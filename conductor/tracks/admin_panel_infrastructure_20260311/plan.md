@@ -15,7 +15,7 @@
     - Design charts and cards for platform metrics (Total Users, Engagement).
 
 ## Phase 3: User Management System
-- [~] Task: User Management API
+- [x] Task: User Management API (c13056b)
     - Build endpoints to list, search, and manage user accounts.
 - [ ] Task: Build User Management UI
     - Design searchable user list and user detail view.
