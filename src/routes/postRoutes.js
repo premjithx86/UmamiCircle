@@ -5,6 +5,7 @@ const User = require("../models/User");
 const { upload, processImageModeration } = require("../middleware/uploadMiddleware");
 const { moderateText } = require("../middleware/textModerationMiddleware");
 const { authMiddleware } = require("../middleware/auth");
+const { createNotification } = require("../services/notificationService");
 
 // Create a new post
 router.post("/", authMiddleware, upload.single("image"), moderateText, processImageModeration, async (req, res) => {
@@ -67,6 +68,16 @@ router.post("/like/:id", authMiddleware, async (req, res) => {
       // Like the post
       post.likes.push(userDoc._id);
       await post.save();
+
+      // Trigger Notification
+      await createNotification({
+        user: post.user,
+        actor: userDoc._id,
+        type: "like",
+        targetType: "Post",
+        targetId: post._id,
+      });
+
       return res.status(200).json({ message: "Post liked successfully", likes: post.likes.length });
     } else {
       // Unlike the post

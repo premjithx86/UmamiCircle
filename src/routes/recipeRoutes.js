@@ -5,6 +5,7 @@ const User = require("../models/User");
 const { upload, processImageModeration } = require("../middleware/uploadMiddleware");
 const { moderateText } = require("../middleware/textModerationMiddleware");
 const { authMiddleware } = require("../middleware/auth");
+const { createNotification } = require("../services/notificationService");
 
 // Create a new recipe
 router.post("/", authMiddleware, upload.single("image"), moderateText, processImageModeration, async (req, res) => {
@@ -73,6 +74,16 @@ router.post("/like/:id", authMiddleware, async (req, res) => {
       // Like the recipe
       recipe.likes.push(userDoc._id);
       await recipe.save();
+
+      // Trigger Notification
+      await createNotification({
+        user: recipe.user,
+        actor: userDoc._id,
+        type: "like",
+        targetType: "Recipe",
+        targetId: recipe._id,
+      });
+
       return res.status(200).json({ message: "Recipe liked successfully", likes: recipe.likes.length });
     } else {
       // Unlike the recipe

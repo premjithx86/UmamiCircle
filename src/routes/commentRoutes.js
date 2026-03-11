@@ -5,6 +5,7 @@ const Post = require("../models/Post");
 const Recipe = require("../models/Recipe");
 const User = require("../models/User");
 const { authMiddleware } = require("../middleware/auth");
+const { createNotification } = require("../services/notificationService");
 
 /**
  * Create a comment
@@ -28,11 +29,25 @@ router.post("/", authMiddleware, async (req, res) => {
 
     await newComment.save();
 
-    // Increment commentsCount in the target model
+    // Increment commentsCount in the target model and fetch owner for notification
+    let targetOwnerId;
     if (targetType === "Post") {
-      await Post.findByIdAndUpdate(targetId, { $inc: { commentsCount: 1 } });
+      const post = await Post.findByIdAndUpdate(targetId, { $inc: { commentsCount: 1 } });
+      targetOwnerId = post.user;
     } else if (targetType === "Recipe") {
-      await Recipe.findByIdAndUpdate(targetId, { $inc: { commentsCount: 1 } });
+      const recipe = await Recipe.findByIdAndUpdate(targetId, { $inc: { commentsCount: 1 } });
+      targetOwnerId = recipe.user;
+    }
+
+    // Trigger Notification
+    if (targetOwnerId) {
+      await createNotification({
+        user: targetOwnerId,
+        actor: userDoc._id,
+        type: "comment",
+        targetType,
+        targetId,
+      });
     }
 
     res.status(201).json(newComment);

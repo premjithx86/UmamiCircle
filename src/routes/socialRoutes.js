@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const Report = require("../models/Report");
 const { authMiddleware } = require("../middleware/auth");
+const { createNotification } = require("../services/notificationService");
 
 /**
  * Follow a user
@@ -41,6 +42,13 @@ router.post("/follow/:id", authMiddleware, async (req, res) => {
     if (!userToFollow.followers.includes(currentUser._id)) {
       userToFollow.followers.push(currentUser._id);
       await userToFollow.save();
+
+      // Trigger Notification
+      await createNotification({
+        user: targetUserId,
+        actor: currentUser._id,
+        type: "follow",
+      });
     }
 
     res.status(200).json({ message: "Successfully followed user" });
