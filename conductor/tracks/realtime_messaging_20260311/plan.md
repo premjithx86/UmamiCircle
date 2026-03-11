@@ -18,7 +18,7 @@
 ## Phase 3: Messaging Frontend
 - [x] Task: Build Conversation List UI (f885fb6)
     - Design sidebar with recent chats and status indicators.
-- [ ] Task: Build Chat Window UI
+- [x] Task: Build Chat Window UI (8a9c7c6)
     - Design message bubbles, typing indicators, and message input.
 - [ ] Task: Chat Integration
     - Connect the chat interface with the Socket.io client and backend API.
