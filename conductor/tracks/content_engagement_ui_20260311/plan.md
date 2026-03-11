@@ -8,7 +8,7 @@
     - Implement time/servings/difficulty display.
 
 ## Phase 2: Engagement Infrastructure
-- [~] Task: Create Engagement Bar Component
+- [x] Task: Create Engagement Bar Component (422e072)
     - Implement Like/Unlike logic with optimistic UI.
     - Build Bookmark/Unbookmark and Share (Copy Link) features.
 - [ ] Task: Implement Comment System UI
