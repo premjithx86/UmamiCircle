@@ -11,5 +11,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Content Creation: Post and Recipe Models, Image Upload with Moderation Pipeline, and Text Moderation**
+- [x] **Track: Content Creation: Post and Recipe Models, Image Upload with Moderation Pipeline, and Text Moderation**
   *Link: [./tracks/content_creation_moderation_20260311/](./tracks/content_creation_moderation_20260311/)*
