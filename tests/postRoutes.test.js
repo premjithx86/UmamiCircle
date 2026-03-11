@@ -37,7 +37,7 @@ describe("Post Routes Integration Test", () => {
   it("should create a new post with image upload and moderation", async () => {
     const res = await request(app)
       .post("/api/posts")
-      .set("Authorization", "Bearer mock-token")
+      .set("Authorization", "Bearer mock-uid-123")
       .field("caption", "Delicious pasta")
       .field("tags", JSON.stringify(["pasta", "italian"]))
       .attach("image", Buffer.from("dummy-image-data"), "test.jpg");
@@ -54,14 +54,14 @@ describe("Post Routes Integration Test", () => {
     // First upload
     await request(app)
       .post("/api/posts")
-      .set("Authorization", "Bearer mock-token")
+      .set("Authorization", "Bearer mock-uid-123")
       .field("caption", "First upload")
       .attach("image", imageBuffer, "test1.jpg");
 
     // Second upload (same image)
     const res = await request(app)
       .post("/api/posts")
-      .set("Authorization", "Bearer mock-token")
+      .set("Authorization", "Bearer mock-uid-123")
       .field("caption", "Second upload")
       .attach("image", imageBuffer, "test2.jpg");
 

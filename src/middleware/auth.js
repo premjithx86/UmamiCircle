@@ -4,9 +4,11 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
   // In a real app, verify with firebaseAdmin.auth().verifyIdToken(token)
-  // For now, we mock the user based on the token
+  // For testing, we extract the uid from "Bearer <uid>"
+  const uid = token.split(" ")[1] || "mock-uid-123";
+  
   req.user = {
-    uid: "mock-uid-123", // For testing, this could be extracted from the token
+    uid: uid,
     email: "mock@example.com"
   };
   next();

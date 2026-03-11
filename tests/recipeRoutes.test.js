@@ -37,7 +37,7 @@ describe("Recipe Routes Integration Test", () => {
   it("should create a new recipe with image upload and moderation", async () => {
     const res = await request(app)
       .post("/api/recipes")
-      .set("Authorization", "Bearer mock-token")
+      .set("Authorization", "Bearer mock-uid-123")
       .field("title", "Pasta Carbonara")
       .field("description", "A classic Italian pasta dish.")
       .field("ingredients", JSON.stringify(["spaghetti", "eggs", "pecorino", "guanciale"]))
