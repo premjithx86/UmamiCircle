@@ -5,7 +5,7 @@
     - Create `Conversation` and `Message` schemas in src/models.
 - [x] Task: Implement Conversation and Message Routes (60eb967)
     - Build API endpoints to fetch conversations and message history.
-- [ ] Task: Message Security and Validation
+- [x] Task: Message Security and Validation (9f43ce2)
     - Implement checks for blocked users and message ownership.
 
 ## Phase 2: Real-time with Socket.io
