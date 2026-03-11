@@ -8,14 +8,14 @@
     - Setup a separate React/Tailwind frontend or route group for `/admin`.
     - Build the Admin Sidebar and Layout.
 
-## Phase 2: Admin Dashboard
+## Phase 2: Admin Dashboard [checkpoint: 2238969]
 - [x] Task: Real-time Platform Metrics API (e263f6a)
     - Implement endpoints to aggregate platform stats.
 - [x] Task: Build Dashboard UI (778768d)
     - Design charts and cards for platform metrics (Total Users, Engagement).
 
 ## Phase 3: User Management System
-- [ ] Task: User Management API
+- [~] Task: User Management API
     - Build endpoints to list, search, and manage user accounts.
 - [ ] Task: Build User Management UI
     - Design searchable user list and user detail view.
