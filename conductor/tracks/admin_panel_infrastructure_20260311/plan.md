@@ -4,7 +4,7 @@
 - [x] Task: Admin API and Authentication (f59fdeb)
     - Implement JWT-based admin authentication.
     - Define Admin roles and permission middleware.
-- [ ] Task: Admin Frontend Scaffolding
+- [x] Task: Admin Frontend Scaffolding (b55a930)
     - Setup a separate React/Tailwind frontend or route group for `/admin`.
     - Build the Admin Sidebar and Layout.
 
