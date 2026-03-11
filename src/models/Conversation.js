@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const ConversationSchema = new mongoose.Schema({
   participants: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true,
   }],
   lastMessage: {
@@ -17,8 +17,10 @@ const ConversationSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Validation to ensure at least 2 participants
-ConversationSchema.path("participants").validate(function (value) {
+ConversationSchema.path('participants').validate(function(value) {
   return value.length >= 2;
-}, "A conversation must have at least 2 participants.");
+}, 'A conversation must have at least 2 participants.');
 
-module.exports = mongoose.model("Conversation", ConversationSchema);
+const Conversation = mongoose.model('Conversation', ConversationSchema);
+
+module.exports = { Conversation };

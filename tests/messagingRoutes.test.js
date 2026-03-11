@@ -1,10 +1,10 @@
-const request = require("supertest");
-const app = require("../src/app");
-const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server");
-const User = require("../src/models/User");
-const Conversation = require("../src/models/Conversation");
-const Message = require("../src/models/Message");
+const request = require('supertest');
+const app = require('../src/app');
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const User = require('../src/models/User');
+const { Conversation } = require('../src/models/Conversation');
+const { Message } = require('../src/models/Message');
 
 let mongoServer;
 

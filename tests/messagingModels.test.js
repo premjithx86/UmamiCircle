@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server");
-const Conversation = require("../src/models/Conversation");
-const Message = require("../src/models/Message");
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const { Conversation } = require('../src/models/Conversation');
+const { Message } = require('../src/models/Message');
 
 let mongoServer;
 
