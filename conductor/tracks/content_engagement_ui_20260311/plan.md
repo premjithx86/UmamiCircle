@@ -16,7 +16,7 @@
     - Implement "Delete Comment" for post owners.
 
 ## Phase 3: Content Interaction Polish
-- [ ] Task: Content Sharing UI
+- [~] Task: Content Sharing UI
     - Implement social sharing options and link copy confirmation.
 - [ ] Task: Tag and Search Integration
     - Make tags on posts/recipes clickable for search redirection.
