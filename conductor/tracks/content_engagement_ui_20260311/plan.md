@@ -7,7 +7,7 @@
     - Create structured layout for ingredients and steps.
     - Implement time/servings/difficulty display.
 
-## Phase 2: Engagement Infrastructure
+## Phase 2: Engagement Infrastructure [checkpoint: 6a20b4d]
 - [x] Task: Create Engagement Bar Component (422e072)
     - Implement Like/Unlike logic with optimistic UI.
     - Build Bookmark/Unbookmark and Share (Copy Link) features.
