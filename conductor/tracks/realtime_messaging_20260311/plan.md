@@ -15,7 +15,7 @@
 - [x] Task: Implement Messaging Events (18abebf)
     - Build emitters and listeners for `new_message`, `typing`, and `message_read`.
 
-## Phase 3: Messaging Frontend
+## Phase 3: Messaging Frontend [checkpoint: 0b50cf0]
 - [x] Task: Build Conversation List UI (f885fb6)
     - Design sidebar with recent chats and status indicators.
 - [x] Task: Build Chat Window UI (8a9c7c6)
