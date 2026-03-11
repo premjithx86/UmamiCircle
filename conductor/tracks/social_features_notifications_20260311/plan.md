@@ -28,7 +28,7 @@
     - [ ] Create `POST /api/comments` for both Posts and Recipes.
     - [ ] Create `GET /api/comments/:type/:id`.
     - [ ] Create `DELETE /api/comments/:id`.
-- [ ] Task: Implement Bookmarking/Sharing Routes
+- [x] Task: Implement Bookmarking/Sharing Routes (9174038)
     - [ ] Create `POST /api/social/bookmark/:type/:id`.
     - [ ] Create `POST /api/social/share/:type/:id`.
 
