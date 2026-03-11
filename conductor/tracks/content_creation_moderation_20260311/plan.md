@@ -1,7 +1,7 @@
 # Implementation Plan: Content Creation & Moderation Pipeline
 
 ## Phase 1: Models and Infrastructure
-- [x] Task: Create Post and Recipe Models
+- [x] Task: Create Post and Recipe Models (f0bf7dc)
     - [x] Define Mongoose schema for `Post` in `src/models/Post.js`.
     - [x] Define Mongoose schema for `Recipe` in `src/models/Recipe.js`.
     - [x] Add basic unit tests for the models.
