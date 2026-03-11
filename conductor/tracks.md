@@ -12,10 +12,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] ~~**Track: Content Creation: Post and Recipe Models, Image Upload with Moderation Pipeline, and Text Moderation**~~ (Archived)
   *Link: [./archive/content_creation_moderation_20260311/](./archive/content_creation_moderation_20260311/)*
 
----
-
-- [x] **Track: Social Features: Follow/Unfollow, Block/Report users, Like/Comment/Bookmark posts, Share posts, Notifications system**
-  *Link: [./tracks/social_features_notifications_20260311/](./tracks/social_features_notifications_20260311/)*
+- [x] ~~**Track: Social Features: Follow/Unfollow, Block/Report users, Like/Comment/Bookmark posts, Share posts, Notifications system**~~ (Archived)
+  *Link: [./archive/social_features_notifications_20260311/](./archive/social_features_notifications_20260311/)*
 
 ---
 
