@@ -20,7 +20,7 @@
     - Design sidebar with recent chats and status indicators.
 - [x] Task: Build Chat Window UI (8a9c7c6)
     - Design message bubbles, typing indicators, and message input.
-- [ ] Task: Chat Integration
+- [x] Task: Chat Integration (1dfa792)
     - Connect the chat interface with the Socket.io client and backend API.
 
 ## Phase: Final Verification
