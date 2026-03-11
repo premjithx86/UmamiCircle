@@ -76,4 +76,45 @@ describe("Social Routes Integration Tests", () => {
       expect(updatedUser2.followers).not.toContainEqual(user1._id);
     });
   });
+
+  describe("Block/Unblock", () => {
+    it("should allow user1 to block user2", async () => {
+      const res = await request(app)
+        .post(`/api/social/block/${user2._id}`)
+        .set("Authorization", "Bearer uid-1");
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toMatch(/blocked/i);
+
+      const updatedUser1 = await User.findById(user1._id);
+      expect(updatedUser1.blocked).toContainEqual(user2._id);
+    });
+
+    it("should allow user1 to unblock user2", async () => {
+      user1.blocked.push(user2._id);
+      await user1.save();
+
+      const res = await request(app)
+        .post(`/api/social/unblock/${user2._id}`)
+        .set("Authorization", "Bearer uid-1");
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toMatch(/unblocked/i);
+
+      const updatedUser1 = await User.findById(user1._id);
+      expect(updatedUser1.blocked).not.toContainEqual(user2._id);
+    });
+  });
+
+  describe("Report", () => {
+    it("should allow user1 to report user2", async () => {
+      const res = await request(app)
+        .post(`/api/social/report/User/${user2._id}`)
+        .set("Authorization", "Bearer uid-1")
+        .send({ reason: "Spam profile" });
+
+      expect(res.status).toBe(201);
+      expect(res.body.message).toMatch(/report/i);
+    });
+  });
 });
