@@ -1,6 +1,6 @@
 # Implementation Plan: Social Features, Engagement, and Notifications
 
-## Phase 1: Models and Relationships
+## Phase 1: Models and Relationships [checkpoint: 5656bf8]
 - [x] Task: Create Social Models (Comment, Notification, Report) (5fab622)
     - [ ] Define `Comment` schema (src/models/Comment.js).
     - [ ] Define `Notification` schema (src/models/Notification.js).
