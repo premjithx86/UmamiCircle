@@ -6,7 +6,7 @@
     - [ ] Define `Notification` schema (src/models/Notification.js).
     - [ ] Define `Report` schema (src/models/Report.js).
     - [ ] Add basic unit tests for the models.
-- [ ] Task: Update Existing Models (User, Post, Recipe)
+- [x] Task: Update Existing Models (User, Post, Recipe) (69556c8)
     - [ ] Add `bookmarks` to `User` model.
     - [ ] Add `likes` and `commentsCount` to `Recipe` model.
     - [ ] Verify model consistency and update tests.
