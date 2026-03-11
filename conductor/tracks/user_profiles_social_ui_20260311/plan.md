@@ -8,7 +8,7 @@
     - Create tabs for "Posts", "Recipes", and "Bookmarks".
     - Implement grid and list views for content.
 
-## Phase 2: Relationship and Social Lists
+## Phase 2: Relationship and Social Lists [checkpoint: f040ca6]
 - [x] Task: Build Followers/Following Modals (06a08ac)
     - Fetch and display lists of users with follow/unfollow actions.
 - [x] Task: Profile Settings and Editing (edddcbb)
