@@ -9,7 +9,7 @@
     - Build the Admin Sidebar and Layout.
 
 ## Phase 2: Admin Dashboard
-- [ ] Task: Real-time Platform Metrics API
+- [~] Task: Real-time Platform Metrics API
     - Implement endpoints to aggregate platform stats.
 - [ ] Task: Build Dashboard UI
     - Design charts and cards for platform metrics (Total Users, Engagement).

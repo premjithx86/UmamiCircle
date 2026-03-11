@@ -1,8 +1,34 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
+const User = require("../models/User");
+const Post = require("../models/Post");
 const { adminAuth, authorizeRoles } = require("../middleware/adminAuth");
 const router = express.Router();
+
+// Get dashboard stats
+router.get("/dashboard/stats", adminAuth, async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const dailyPosts = await Post.countDocuments({
+      createdAt: { $gte: twentyFourHoursAgo },
+    });
+
+    const activeUsers = await User.countDocuments({
+      updatedAt: { $gte: twentyFourHoursAgo },
+    });
+
+    res.status(200).json({
+      totalUsers,
+      dailyPosts,
+      activeUsers,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Admin Login
 router.post("/login", async (req, res) => {
