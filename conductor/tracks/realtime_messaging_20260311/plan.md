@@ -9,10 +9,10 @@
     - Implement checks for blocked users and message ownership.
 
 ## Phase 2: Real-time with Socket.io
-- [ ] Task: Setup Socket.io Server
+- [x] Task: Setup Socket.io Server (18abebf)
     - Initialize Socket.io on the Node.js server.
     - Implement room logic (per conversation).
-- [ ] Task: Implement Messaging Events
+- [x] Task: Implement Messaging Events (18abebf)
     - Build emitters and listeners for `new_message`, `typing`, and `message_read`.
 
 ## Phase 3: Messaging Frontend
