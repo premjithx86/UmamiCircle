@@ -8,6 +8,7 @@ import { Explore } from './pages/Explore';
 import { Notifications } from './pages/Notifications';
 import { Profile } from './pages/Profile';
 import { PostDetail } from './pages/PostDetail';
+import { RecipeDetail } from './pages/RecipeDetail';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path="notifications" element={<Notifications />} />
               <Route path="u/:username" element={<Profile />} />
               <Route path="posts/:id" element={<PostDetail />} />
+              <Route path="recipes/:id" element={<RecipeDetail />} />
             </Route>
           </Routes>
         </Router>
