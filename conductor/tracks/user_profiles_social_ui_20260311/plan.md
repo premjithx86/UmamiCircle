@@ -15,7 +15,7 @@
     - Create UI for updating bio, avatar, and cover image.
     - Implement "Edit Profile" modal/page.
 
-## Phase 3: Social Interactions and Feedback
+## Phase 3: Social Interactions and Feedback [checkpoint: 7e61a5c]
 - [x] Task: Real-time Social Feedback (2cf6217)
     - Implement immediate UI updates for social actions using optimistic UI patterns.
 - [x] Task: Blocking and Reporting UI (642c43b)
