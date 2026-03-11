@@ -17,7 +17,7 @@
 ## Phase 3: User Management System
 - [x] Task: User Management API (c13056b)
     - Build endpoints to list, search, and manage user accounts.
-- [~] Task: Build User Management UI
+- [x] Task: Build User Management UI (a648ece)
     - Design searchable user list and user detail view.
     - Implement Admin actions (Suspend/Warn/Delete).
 
