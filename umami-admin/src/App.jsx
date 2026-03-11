@@ -4,9 +4,9 @@ import { AdminProvider } from './context/AdminContext';
 import { AdminLayout } from './layouts/AdminLayout';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
+import { UserManagement } from './pages/UserManagement';
 
 // Placeholder components
-const UserManagement = () => <h1 className="text-2xl font-bold">User Management</h1>;
 const ContentModeration = () => <h1 className="text-2xl font-bold">Content Moderation</h1>;
 const Reports = () => <h1 className="text-2xl font-bold">Reports</h1>;
 const ActivityLogs = () => <h1 className="text-2xl font-bold">Activity Logs</h1>;
