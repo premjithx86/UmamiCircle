@@ -49,4 +49,41 @@ router.post("/", authMiddleware, upload.single("image"), moderateText, processIm
   }
 });
 
+/**
+ * Toggle like/unlike on a recipe
+ */
+router.post("/like/:id", authMiddleware, async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    const currentUid = req.user.uid;
+
+    const userDoc = await User.findOne({ firebaseUID: currentUid });
+    if (!userDoc) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    const likeIndex = recipe.likes.indexOf(userDoc._id);
+
+    if (likeIndex === -1) {
+      // Like the recipe
+      recipe.likes.push(userDoc._id);
+      await recipe.save();
+      return res.status(200).json({ message: "Recipe liked successfully", likes: recipe.likes.length });
+    } else {
+      // Unlike the recipe
+      recipe.likes.splice(likeIndex, 1);
+      await recipe.save();
+      return res.status(200).json({ message: "Recipe unliked successfully", likes: recipe.likes.length });
+    }
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).json({ error: "Failed to toggle like" });
+  }
+});
+
 module.exports = router;

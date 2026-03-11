@@ -78,4 +78,39 @@ describe("Post Routes Integration Test", () => {
 
     expect(res.status).toBe(401);
   });
+
+  it("should like and then unlike a post", async () => {
+    // 1. Create a post first
+    const postRes = await request(app)
+      .post("/api/posts")
+      .set("Authorization", "Bearer mock-uid-123")
+      .field("caption", "My first post")
+      .attach("image", Buffer.from("data1"), "test1.jpg");
+    
+    const postId = postRes.body._id;
+
+    // 2. Like the post
+    const likeRes = await request(app)
+      .post(`/api/posts/like/${postId}`)
+      .set("Authorization", "Bearer mock-uid-123");
+    
+    expect(likeRes.status).toBe(200);
+    expect(likeRes.body.message).toMatch(/liked/i);
+    
+    // Verify in DB
+    const postAfterLike = await Post.findById(postId);
+    expect(postAfterLike.likes).toContainEqual(testUser._id);
+
+    // 3. Unlike the post (toggling)
+    const unlikeRes = await request(app)
+      .post(`/api/posts/like/${postId}`)
+      .set("Authorization", "Bearer mock-uid-123");
+    
+    expect(unlikeRes.status).toBe(200);
+    expect(unlikeRes.body.message).toMatch(/unliked/i);
+
+    // Verify in DB
+    const postAfterUnlike = await Post.findById(postId);
+    expect(postAfterUnlike.likes).not.toContainEqual(testUser._id);
+  });
 });

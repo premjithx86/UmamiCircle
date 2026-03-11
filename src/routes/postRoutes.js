@@ -43,4 +43,41 @@ router.post("/", authMiddleware, upload.single("image"), moderateText, processIm
   }
 });
 
+/**
+ * Toggle like/unlike on a post
+ */
+router.post("/like/:id", authMiddleware, async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const currentUid = req.user.uid;
+
+    const userDoc = await User.findOne({ firebaseUID: currentUid });
+    if (!userDoc) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const likeIndex = post.likes.indexOf(userDoc._id);
+
+    if (likeIndex === -1) {
+      // Like the post
+      post.likes.push(userDoc._id);
+      await post.save();
+      return res.status(200).json({ message: "Post liked successfully", likes: post.likes.length });
+    } else {
+      // Unlike the post
+      post.likes.splice(likeIndex, 1);
+      await post.save();
+      return res.status(200).json({ message: "Post unliked successfully", likes: post.likes.length });
+    }
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).json({ error: "Failed to toggle like" });
+  }
+});
+
 module.exports = router;

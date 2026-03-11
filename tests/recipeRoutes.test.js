@@ -58,4 +58,40 @@ describe("Recipe Routes Integration Test", () => {
 
     expect(res.status).toBe(401);
   });
+
+  it("should like and then unlike a recipe", async () => {
+    // 1. Create a recipe first
+    const recipeRes = await request(app)
+      .post("/api/recipes")
+      .set("Authorization", "Bearer mock-uid-123")
+      .field("title", "My first recipe")
+      .field("description", "A test recipe")
+      .attach("image", Buffer.from("data1"), "recipe1.jpg");
+    
+    const recipeId = recipeRes.body._id;
+
+    // 2. Like the recipe
+    const likeRes = await request(app)
+      .post(`/api/recipes/like/${recipeId}`)
+      .set("Authorization", "Bearer mock-uid-123");
+    
+    expect(likeRes.status).toBe(200);
+    expect(likeRes.body.message).toMatch(/liked/i);
+    
+    // Verify in DB
+    const recipeAfterLike = await Recipe.findById(recipeId);
+    expect(recipeAfterLike.likes).toContainEqual(testUser._id);
+
+    // 3. Unlike the recipe (toggling)
+    const unlikeRes = await request(app)
+      .post(`/api/recipes/like/${recipeId}`)
+      .set("Authorization", "Bearer mock-uid-123");
+    
+    expect(unlikeRes.status).toBe(200);
+    expect(unlikeRes.body.message).toMatch(/unliked/i);
+
+    // Verify in DB
+    const recipeAfterUnlike = await Recipe.findById(recipeId);
+    expect(recipeAfterUnlike.likes).not.toContainEqual(testUser._id);
+  });
 });
