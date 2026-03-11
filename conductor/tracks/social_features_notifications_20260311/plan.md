@@ -32,7 +32,7 @@
     - [ ] Create `POST /api/social/bookmark/:type/:id`.
     - [ ] Create `POST /api/social/share/:type/:id`.
 
-## Phase 4: Notification System & Real-time Alerts
+## Phase 4: Notification System & Real-time Alerts [checkpoint: 271399b]
 - [x] Task: Implement Notification API (ba840fc)
     - [ ] Create `GET /api/notifications`.
     - [ ] Create `PUT /api/notifications/read/:id`.
