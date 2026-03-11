@@ -4,7 +4,7 @@
 - [x] Task: Create Profile Header Component (ea1e1cf)
     - Implement avatar, bio, and stats (post count, follower count).
     - Design Follow/Unfollow button logic.
-- [ ] Task: Implement Profile Content Tabs
+- [x] Task: Implement Profile Content Tabs (0e0956c)
     - Create tabs for "Posts", "Recipes", and "Bookmarks".
     - Implement grid and list views for content.
 
