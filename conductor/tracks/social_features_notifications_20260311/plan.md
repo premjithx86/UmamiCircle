@@ -12,7 +12,7 @@
     - [ ] Verify model consistency and update tests.
 
 ## Phase 2: User Relationship API
-- [ ] Task: Implement Follow/Unfollow Routes
+- [x] Task: Implement Follow/Unfollow Routes (40e44de)
     - [ ] Create `POST /api/social/follow/:id` and `POST /api/social/unfollow/:id`.
     - [ ] Implement logic to update both users' follow/following lists.
 - [ ] Task: Implement Block/Report Routes
