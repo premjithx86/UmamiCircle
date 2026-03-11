@@ -11,7 +11,7 @@
 ## Phase 2: Relationship and Social Lists
 - [x] Task: Build Followers/Following Modals (06a08ac)
     - Fetch and display lists of users with follow/unfollow actions.
-- [ ] Task: Profile Settings and Editing
+- [x] Task: Profile Settings and Editing (edddcbb)
     - Create UI for updating bio, avatar, and cover image.
     - Implement "Edit Profile" modal/page.
 
