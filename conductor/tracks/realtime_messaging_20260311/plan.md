@@ -3,7 +3,7 @@
 ## Phase 1: Backend Messaging Logic
 - [x] Task: Define Messaging Models (cda999c)
     - Create `Conversation` and `Message` schemas in src/models.
-- [ ] Task: Implement Conversation and Message Routes
+- [x] Task: Implement Conversation and Message Routes (60eb967)
     - Build API endpoints to fetch conversations and message history.
 - [ ] Task: Message Security and Validation
     - Implement checks for blocked users and message ownership.
