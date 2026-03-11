@@ -15,7 +15,8 @@ const recipeRoutes = require("./routes/recipeRoutes");
 const socialRoutes = require("./routes/socialRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
-const { messagingRouter } = require("./routes/messagingRoutes");
+const messagingRoutes = require("./routes/messagingRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
@@ -23,7 +24,8 @@ app.use("/api/recipes", recipeRoutes);
 app.use("/api/social", socialRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
-app.use("/api/messages", messagingRouter);
+app.use("/api/messages", messagingRoutes.messagingRouter);
+app.use("/api/admin", adminRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
