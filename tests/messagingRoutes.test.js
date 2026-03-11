@@ -90,7 +90,7 @@ describe("Messaging Routes Integration Test", () => {
 
       expect(res.status).toBe(201);
       expect(res.body.content).toBe("Test message");
-      expect(res.body.sender).toBe(user1._id.toString());
+      expect(res.body.sender._id).toBe(user1._id.toString());
     });
   });
 

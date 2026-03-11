@@ -3,6 +3,7 @@ const connectDB = require("./src/config/db");
 const http = require("http");
 const { Server } = require("socket.io");
 const { initSocket } = require("./src/services/notificationService");
+const { initMessagingSocket } = require("./src/services/messagingService");
 require("dotenv").config();
 
 const port = process.env.PORT || 8080;
@@ -17,8 +18,9 @@ const io = new Server(server, {
 // Connect to Database
 connectDB();
 
-// Initialize Socket Service
+// Initialize Socket Services
 initSocket(io);
+initMessagingSocket(io);
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);

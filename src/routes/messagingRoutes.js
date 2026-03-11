@@ -4,6 +4,7 @@ const User = require("../models/User");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 const { authMiddleware } = require("../middleware/auth");
+const { emitNewMessage } = require("../services/messagingService");
 
 /**
  * Get or create a conversation with a participant
@@ -109,7 +110,13 @@ router.post("/", authMiddleware, async (req, res) => {
       lastMessageAt: Date.now(),
     });
 
-    res.status(201).json(message);
+    // Populate sender info for frontend
+    const populatedMessage = await Message.findById(message._id).populate("sender", "username avatar");
+
+    // Emit real-time event
+    emitNewMessage(conversationId, populatedMessage);
+
+    res.status(201).json(populatedMessage);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
