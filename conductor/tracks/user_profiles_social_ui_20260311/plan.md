@@ -9,7 +9,7 @@
     - Implement grid and list views for content.
 
 ## Phase 2: Relationship and Social Lists
-- [ ] Task: Build Followers/Following Modals
+- [x] Task: Build Followers/Following Modals (06a08ac)
     - Fetch and display lists of users with follow/unfollow actions.
 - [ ] Task: Profile Settings and Editing
     - Create UI for updating bio, avatar, and cover image.
