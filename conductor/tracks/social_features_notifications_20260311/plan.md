@@ -11,7 +11,7 @@
     - [ ] Add `likes` and `commentsCount` to `Recipe` model.
     - [ ] Verify model consistency and update tests.
 
-## Phase 2: User Relationship API
+## Phase 2: User Relationship API [checkpoint: 9693c52]
 - [x] Task: Implement Follow/Unfollow Routes (40e44de)
     - [ ] Create `POST /api/social/follow/:id` and `POST /api/social/unfollow/:id`.
     - [ ] Implement logic to update both users' follow/following lists.
