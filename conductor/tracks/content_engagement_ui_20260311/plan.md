@@ -3,7 +3,7 @@
 ## Phase 1: Detail Views
 - [x] Task: Build Post Detail Page (1c74dc1)
     - Design image viewer and sidebar for comments/details.
-- [~] Task: Build Recipe Detail Page
+- [x] Task: Build Recipe Detail Page (bafd355)
     - Create structured layout for ingredients and steps.
     - Implement time/servings/difficulty display.
 
