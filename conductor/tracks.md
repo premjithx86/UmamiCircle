@@ -29,8 +29,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Admin Panel: Infrastructure and User Management**
-  *Link: [./tracks/admin_panel_infrastructure_20260311/](./tracks/admin_panel_infrastructure_20260311/)*
+- [x] ~~**Track: Admin Panel: Infrastructure and User Management**~~ (Archived)
+  *Link: [./archive/admin_panel_infrastructure_20260311/](./archive/admin_panel_infrastructure_20260311/)*
 
 ---
 
