@@ -6,6 +6,7 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import Notifications from './pages/Notifications';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               <Route index element={<Home />} />
               <Route path="explore" element={<Explore />} />
               <Route path="notifications" element={<Notifications />} />
+              <Route path="u/:username" element={<Profile />} />
             </Route>
           </Routes>
         </Router>
