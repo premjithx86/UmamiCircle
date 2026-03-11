@@ -1,6 +1,6 @@
 # Implementation Plan: Content Engagement UI
 
-## Phase 1: Detail Views
+## Phase 1: Detail Views [checkpoint: ee99121]
 - [x] Task: Build Post Detail Page (1c74dc1)
     - Design image viewer and sidebar for comments/details.
 - [x] Task: Build Recipe Detail Page (bafd355)
