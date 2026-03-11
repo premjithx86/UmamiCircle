@@ -22,6 +22,6 @@
     - Implement Block/Unblock buttons with confirmation modals.
     - Build the Report User interface.
 
-## Phase: Final Verification
+## Phase: Final Verification [checkpoint: a139180]
 - [x] Task: Verification of Profile Routing (`/u/:username`) (faf045c)
 - [x] Task: Cross-browser testing of profile layouts (28754ab)

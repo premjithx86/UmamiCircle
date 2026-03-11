@@ -20,7 +20,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Core Social UI: User Profiles and Social Interaction Components**
+- [x] **Track: Core Social UI: User Profiles and Social Interaction Components**
   *Link: [./tracks/user_profiles_social_ui_20260311/](./tracks/user_profiles_social_ui_20260311/)*
 
 ---
