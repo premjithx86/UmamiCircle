@@ -33,7 +33,7 @@
     - [ ] Create `POST /api/social/share/:type/:id`.
 
 ## Phase 4: Notification System & Real-time Alerts
-- [ ] Task: Implement Notification API
+- [x] Task: Implement Notification API (ba840fc)
     - [ ] Create `GET /api/notifications`.
     - [ ] Create `PUT /api/notifications/read/:id`.
     - [ ] Create `PUT /api/notifications/read-all`.
