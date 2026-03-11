@@ -1,7 +1,7 @@
 # Implementation Plan: Real-time Messaging and Chat System
 
 ## Phase 1: Backend Messaging Logic
-- [ ] Task: Define Messaging Models
+- [x] Task: Define Messaging Models (cda999c)
     - Create `Conversation` and `Message` schemas in src/models.
 - [ ] Task: Implement Conversation and Message Routes
     - Build API endpoints to fetch conversations and message history.
