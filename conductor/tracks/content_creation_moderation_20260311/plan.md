@@ -5,7 +5,7 @@
     - [x] Define Mongoose schema for `Post` in `src/models/Post.js`.
     - [x] Define Mongoose schema for `Recipe` in `src/models/Recipe.js`.
     - [x] Add basic unit tests for the models.
-- [x] Task: Create Content Moderation Service (3f6b9a2)
+- [x] Task: Create Content Moderation Service (18e6009)
     - [x] Initialize `src/services/moderationService.js`.
     - [x] Configure `Sightengine`, `Google Cloud Vision`, `Cloudinary`, and `Groq` API integrations.
     - [x] Implement image hash deduplication logic.
