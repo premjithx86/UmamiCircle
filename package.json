@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/vision": "^5.3.4",
+    "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
@@ -19,6 +20,7 @@
     "firebase-admin": "^13.7.0",
     "groq-sdk": "^0.37.0",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.0",
     "multer": "^2.1.1",
     "obscenity": "^0.4.6",
@@ -33,7 +35,8 @@
   "jest": {
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/umami-frontend/"
+      "/umami-frontend/",
+      "/umami-admin/"
     ]
   }
 }

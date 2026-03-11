@@ -1,7 +1,0 @@
-{
-  "id": "realtime_messaging_20260311",
-  "name": "Real-time Messaging and Chat System",
-  "description": "P2P messaging system using Socket.io for real-time communication.",
-  "status": "pending",
-  "category": "Messaging"
-}
