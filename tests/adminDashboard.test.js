@@ -88,6 +88,8 @@ describe("Admin Dashboard Stats", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.totalUsers).toBe(2);
+    expect(res.body.totalPosts).toBe(2);
+    expect(res.body.totalRecipes).toBe(0);
     expect(res.body.dailyPosts).toBe(2);
     expect(res.body.activeUsers).toBeGreaterThanOrEqual(0);
   });

@@ -9,6 +9,8 @@ vi.mock('../services/adminService');
 describe('Dashboard Component', () => {
   const mockStats = {
     totalUsers: 150,
+    totalPosts: 85,
+    totalRecipes: 40,
     dailyPosts: 25,
     activeUsers: 10,
   };
@@ -29,11 +31,15 @@ describe('Dashboard Component', () => {
     // Check for skeleton or loading state if applicable, but let's wait for the data
     await waitFor(() => {
       expect(screen.getByText('150')).toBeInTheDocument();
+      expect(screen.getByText('85')).toBeInTheDocument();
+      expect(screen.getByText('40')).toBeInTheDocument();
       expect(screen.getByText('25')).toBeInTheDocument();
       expect(screen.getByText('10')).toBeInTheDocument();
     });
 
     expect(screen.getByText('Total Users')).toBeInTheDocument();
+    expect(screen.getByText('Total Posts')).toBeInTheDocument();
+    expect(screen.getByText('Total Recipes')).toBeInTheDocument();
     expect(screen.getByText('Daily Posts')).toBeInTheDocument();
     expect(screen.getByText('Active Users')).toBeInTheDocument();
   });

@@ -3,28 +3,43 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
 const User = require("../models/User");
 const Post = require("../models/Post");
+const Recipe = require("../models/Recipe");
 const { adminAuth, authorizeRoles } = require("../middleware/adminAuth");
 const router = express.Router();
 
 // Get dashboard stats
 router.get("/dashboard/stats", adminAuth, async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
+    const totalUsers = await User.countDocuments() || 0;
+    const totalPosts = await Post.countDocuments() || 0;
+    const totalRecipes = await Recipe.countDocuments() || 0;
     
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const dailyPosts = await Post.countDocuments({
       createdAt: { $gte: twentyFourHoursAgo },
-    });
+    }) || 0;
 
     const activeUsers = await User.countDocuments({
       updatedAt: { $gte: twentyFourHoursAgo },
-    });
+    }) || 0;
 
     res.status(200).json({
       totalUsers,
+      totalPosts,
+      totalRecipes,
       dailyPosts,
       activeUsers,
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get recent platform activity
+router.get("/dashboard/activity", adminAuth, async (req, res) => {
+  try {
+    // Return empty array for now as activity logging is in the next track
+    res.status(200).json([]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

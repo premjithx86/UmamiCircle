@@ -56,10 +56,22 @@ export const Dashboard = () => {
       color: 'bg-blue-500',
     },
     {
-      title: 'Daily Posts',
-      value: stats?.dailyPosts || 0,
+      title: 'Total Posts',
+      value: stats?.totalPosts || 0,
       icon: FileText,
       color: 'bg-green-500',
+    },
+    {
+      title: 'Total Recipes',
+      value: stats?.totalRecipes || 0,
+      icon: FileText,
+      color: 'bg-orange-500',
+    },
+    {
+      title: 'Daily Posts',
+      value: stats?.dailyPosts || 0,
+      icon: Activity,
+      color: 'bg-indigo-500',
     },
     {
       title: 'Active Users',
@@ -82,14 +94,14 @@ export const Dashboard = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {statCards.map((card, index) => (
           <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
             <div className={`${card.color} p-3 rounded-lg`}>
               <card.icon className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">{card.title}</p>
+              <p className="text-sm font-medium text-gray-500 whitespace-nowrap">{card.title}</p>
               <p className="text-2xl font-bold text-gray-900">{card.value}</p>
             </div>
           </div>
