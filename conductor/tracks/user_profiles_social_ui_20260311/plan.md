@@ -16,7 +16,7 @@
     - Implement "Edit Profile" modal/page.
 
 ## Phase 3: Social Interactions and Feedback
-- [ ] Task: Real-time Social Feedback
+- [x] Task: Real-time Social Feedback (2cf6217)
     - Implement immediate UI updates for social actions using optimistic UI patterns.
 - [ ] Task: Blocking and Reporting UI
     - Implement Block/Unblock buttons with confirmation modals.
