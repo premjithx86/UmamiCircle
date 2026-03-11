@@ -10,8 +10,12 @@ app.use(helmet());
 app.use(express.json());
 
 const userRoutes = require("./routes/userRoutes");
+const postRoutes = require("./routes/postRoutes");
+const recipeRoutes = require("./routes/recipeRoutes");
 
 app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/recipes", recipeRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });

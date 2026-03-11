@@ -58,6 +58,9 @@ const verifyFoodContent = async (imageBuffer) => {
  * Uploads image to Cloudinary.
  */
 const uploadToCloudinary = async (imageBuffer, folder = "posts") => {
+  if (process.env.NODE_ENV === "test") {
+    return { secure_url: "http://example.com/mock-image.jpg" };
+  }
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload_stream({ folder }, (error, result) => {
       if (error) reject(error);

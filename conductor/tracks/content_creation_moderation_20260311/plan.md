@@ -21,13 +21,13 @@
     - [x] Implement `validateFoodRelevance` using Groq API.
 
 ## Phase 3: Content Creation API
-- [ ] Task: Implement Create Post Endpoint
-    - [ ] Create `src/routes/postRoutes.js`.
-    - [ ] Implement `POST /api/posts` with full moderation pipeline.
-- [ ] Task: Implement Create Recipe Endpoint
-    - [ ] Create `src/routes/recipeRoutes.js`.
-    - [ ] Implement `POST /api/recipes` with full moderation pipeline.
+- [x] Task: Implement Create Post Endpoint (3215241)
+    - [x] Create `src/routes/postRoutes.js`.
+    - [x] Implement `POST /api/posts` with full moderation pipeline.
+- [x] Task: Implement Create Recipe Endpoint (3215241)
+    - [x] Create `src/routes/recipeRoutes.js`.
+    - [x] Implement `POST /api/recipes` with full moderation pipeline.
 
 ## Phase: Final Verification
-- [ ] Task: Comprehensive Integration Testing
-- [ ] Task: Manual Verification of Moderation Pipeline
+- [x] Task: Comprehensive Integration Testing (3215241)
+- [x] Task: Manual Verification of Moderation Pipeline (3215241)
