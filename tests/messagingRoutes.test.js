@@ -116,5 +116,62 @@ describe("Messaging Routes Integration Test", () => {
       expect(res.body.length).toBe(1);
       expect(res.body[0].content).toBe("Hello");
     });
+
+    it("should return 403 if user is not a participant", async () => {
+      const user3 = new User({
+        firebaseUID: "uid-3",
+        username: "user3",
+        name: "User Three",
+        email: "user3@example.com",
+      });
+      await user3.save();
+
+      const conversation = new Conversation({
+        participants: [user1._id, user2._id],
+      });
+      await conversation.save();
+
+      const res = await request(app)
+        .get(`/api/messages/${conversation._id}`)
+        .set("Authorization", "Bearer uid-3");
+
+      expect(res.status).toBe(403);
+    });
+  });
+
+  describe("Security: Blocked Users", () => {
+    it("should not allow starting a conversation with a blocked user", async () => {
+      user1.blocked.push(user2._id);
+      await user1.save();
+
+      const res = await request(app)
+        .post("/api/messages/conversations")
+        .set("Authorization", "Bearer uid-1")
+        .send({ participantId: user2._id });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toMatch(/block/i);
+    });
+
+    it("should not allow sending a message if one user is blocked", async () => {
+      const conversation = new Conversation({
+        participants: [user1._id, user2._id],
+      });
+      await conversation.save();
+
+      user2.blocked.push(user1._id);
+      await user2.save();
+
+      const res = await request(app)
+        .post("/api/messages")
+        .set("Authorization", "Bearer uid-1")
+        .send({
+          conversationId: conversation._id,
+          content: "Can you see this?",
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toMatch(/block/i);
+    });
   });
 });
