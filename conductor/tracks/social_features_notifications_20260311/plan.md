@@ -21,7 +21,7 @@
     - [ ] Implement blocking logic to prevent interactions.
 
 ## Phase 3: Content Engagement API
-- [ ] Task: Implement Like/Unlike Routes
+- [x] Task: Implement Like/Unlike Routes (0d1fc42)
     - [ ] Create `POST /api/posts/like/:id` and `POST /api/recipes/like/:id`.
     - [ ] Implement toggle logic for likes.
 - [ ] Task: Implement Commenting Routes
