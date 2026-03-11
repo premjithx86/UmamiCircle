@@ -45,6 +45,63 @@ router.get("/dashboard/activity", adminAuth, async (req, res) => {
   }
 });
 
+// List and search users
+router.get("/users", adminAuth, async (req, res) => {
+  try {
+    const { search } = req.query;
+    let query = {};
+    
+    if (search) {
+      query = {
+        $or: [
+          { username: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+          { name: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Block/Unblock user
+router.patch("/users/:id/block", adminAuth, async (req, res) => {
+  try {
+    const { isBlocked } = req.body;
+    if (typeof isBlocked !== "boolean") {
+      return res.status(400).json({ error: "isBlocked must be a boolean" });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isBlocked },
+      { returnDocument: "after" }
+    );
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete user
+router.delete("/users/:id", adminAuth, authorizeRoles("Admin", "SuperAdmin"), async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Admin Login
 router.post("/login", async (req, res) => {
   try {
