@@ -14,12 +14,14 @@ const postRoutes = require("./routes/postRoutes");
 const recipeRoutes = require("./routes/recipeRoutes");
 const socialRoutes = require("./routes/socialRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/social", socialRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
