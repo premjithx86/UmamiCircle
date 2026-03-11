@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { getDashboardStats } from '../services/adminService';
 import { Users, FileText, Activity, AlertCircle, RefreshCw } from 'lucide-react';
 
+/**
+ * Dashboard page displaying platform metrics.
+ * @returns {JSX.Element}
+ */
 export const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);

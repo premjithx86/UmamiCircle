@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { getUsers, toggleBlockUser, deleteUser } from '../services/adminService';
 import { Search, Shield, ShieldOff, Trash2, User as UserIcon, Loader2 } from 'lucide-react';
 
+/**
+ * User Management page for searching, blocking, and deleting users.
+ * @returns {JSX.Element}
+ */
 export const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);

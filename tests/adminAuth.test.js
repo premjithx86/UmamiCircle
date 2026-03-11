@@ -7,6 +7,7 @@ const Admin = require("../src/models/Admin");
 let mongoServer;
 
 beforeAll(async () => {
+  process.env.JWT_ADMIN_SECRET = "testsecret";
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);

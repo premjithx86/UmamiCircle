@@ -10,6 +10,7 @@ let mongoServer;
 let adminToken;
 
 beforeAll(async () => {
+  process.env.JWT_ADMIN_SECRET = "testsecret";
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
@@ -92,5 +93,17 @@ describe("Admin Dashboard Stats", () => {
     expect(res.body.totalRecipes).toBe(0);
     expect(res.body.dailyPosts).toBe(2);
     expect(res.body.activeUsers).toBeGreaterThanOrEqual(0);
+  });
+
+  it("should return zeros when collections are empty", async () => {
+    // beforeEach already clears User and Post collections
+    const res = await request(app)
+      .get("/api/admin/stats")
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.totalUsers).toBe(0);
+    expect(res.body.totalPosts).toBe(0);
+    expect(res.body.totalRecipes).toBe(0);
   });
 });

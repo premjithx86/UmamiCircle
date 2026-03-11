@@ -7,35 +7,42 @@ const Recipe = require("../models/Recipe");
 const { adminAuth, authorizeRoles } = require("../middleware/adminAuth");
 const router = express.Router();
 
-// Get dashboard stats
-router.get("/dashboard/stats", adminAuth, async (req, res) => {
+/**
+ * @route GET /api/admin/dashboard/stats
+ * @desc Get platform-wide metrics for the dashboard
+ * @access Private (Admin)
+ */
+router.get(["/dashboard/stats", "/stats"], adminAuth, async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments() || 0;
-    const totalPosts = await Post.countDocuments() || 0;
-    const totalRecipes = await Recipe.countDocuments() || 0;
+    const [totalUsers, totalPosts, totalRecipes] = await Promise.all([
+      User.countDocuments().catch(() => 0),
+      Post.countDocuments().catch(() => 0),
+      Recipe.countDocuments().catch(() => 0),
+    ]);
     
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const dailyPosts = await Post.countDocuments({
-      createdAt: { $gte: twentyFourHoursAgo },
-    }) || 0;
-
-    const activeUsers = await User.countDocuments({
-      updatedAt: { $gte: twentyFourHoursAgo },
-    }) || 0;
+    const [dailyPosts, activeUsers] = await Promise.all([
+      Post.countDocuments({ createdAt: { $gte: twentyFourHoursAgo } }).catch(() => 0),
+      User.countDocuments({ updatedAt: { $gte: twentyFourHoursAgo } }).catch(() => 0),
+    ]);
 
     res.status(200).json({
-      totalUsers,
-      totalPosts,
-      totalRecipes,
-      dailyPosts,
-      activeUsers,
+      totalUsers: totalUsers || 0,
+      totalPosts: totalPosts || 0,
+      totalRecipes: totalRecipes || 0,
+      dailyPosts: dailyPosts || 0,
+      activeUsers: activeUsers || 0,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get recent platform activity
+/**
+ * @route GET /api/admin/dashboard/activity
+ * @desc Get recent platform activity logs
+ * @access Private (Admin)
+ */
 router.get("/dashboard/activity", adminAuth, async (req, res) => {
   try {
     // Return empty array for now as activity logging is in the next track
@@ -45,7 +52,11 @@ router.get("/dashboard/activity", adminAuth, async (req, res) => {
   }
 });
 
-// List and search users
+/**
+ * @route GET /api/admin/users
+ * @desc List and search users
+ * @access Private (Admin)
+ */
 router.get("/users", adminAuth, async (req, res) => {
   try {
     const { search } = req.query;
@@ -68,7 +79,11 @@ router.get("/users", adminAuth, async (req, res) => {
   }
 });
 
-// Block/Unblock user
+/**
+ * @route PATCH /api/admin/users/:id/block
+ * @desc Block or unblock a user account
+ * @access Private (Admin)
+ */
 router.patch("/users/:id/block", adminAuth, async (req, res) => {
   try {
     const { isBlocked } = req.body;
@@ -89,7 +104,11 @@ router.patch("/users/:id/block", adminAuth, async (req, res) => {
   }
 });
 
-// Delete user
+/**
+ * @route DELETE /api/admin/users/:id
+ * @desc Permanently delete a user account
+ * @access Private (Admin/SuperAdmin)
+ */
 router.delete("/users/:id", adminAuth, authorizeRoles("Admin", "SuperAdmin"), async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
@@ -102,7 +121,11 @@ router.delete("/users/:id", adminAuth, authorizeRoles("Admin", "SuperAdmin"), as
   }
 });
 
-// Admin Login
+/**
+ * @route POST /api/admin/login
+ * @desc Authenticate admin and return JWT
+ * @access Public
+ */
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -112,9 +135,15 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid login credentials" });
     }
 
+    const secret = process.env.JWT_ADMIN_SECRET;
+    if (!secret) {
+      console.error("CRITICAL: JWT_ADMIN_SECRET is not defined");
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
     const token = jwt.sign(
       { _id: admin._id.toString(), role: admin.role },
-      process.env.JWT_ADMIN_SECRET || "supersecretadminkey",
+      secret,
       { expiresIn: "24h" }
     );
 
@@ -124,12 +153,20 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Get current admin info
+/**
+ * @route GET /api/admin/me
+ * @desc Get current authenticated admin info
+ * @access Private (Admin)
+ */
 router.get("/me", adminAuth, async (req, res) => {
   res.status(200).json(req.admin);
 });
 
-// Test route for SuperAdmin only
+/**
+ * @route GET /api/admin/super-only
+ * @desc Test route restricted to SuperAdmin
+ * @access Private (SuperAdmin)
+ */
 router.get("/super-only", adminAuth, authorizeRoles("SuperAdmin"), (req, res) => {
   res.status(200).json({ message: "Welcome SuperAdmin" });
 });
