@@ -11,7 +11,7 @@
 - [x] Task: Create Engagement Bar Component (422e072)
     - Implement Like/Unlike logic with optimistic UI.
     - Build Bookmark/Unbookmark and Share (Copy Link) features.
-- [~] Task: Implement Comment System UI
+- [x] Task: Implement Comment System UI (2349af7)
     - Design comment list and input field.
     - Implement "Delete Comment" for post owners.
 
