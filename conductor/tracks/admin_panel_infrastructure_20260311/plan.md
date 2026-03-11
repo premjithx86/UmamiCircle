@@ -1,7 +1,7 @@
 # Implementation Plan: Admin Panel - Infrastructure and User Management
 
 ## Phase 1: Admin Infrastructure
-- [ ] Task: Admin API and Authentication
+- [x] Task: Admin API and Authentication (f59fdeb)
     - Implement JWT-based admin authentication.
     - Define Admin roles and permission middleware.
 - [ ] Task: Admin Frontend Scaffolding
