@@ -8,7 +8,7 @@
 - [x] Task: Message Security and Validation (9f43ce2)
     - Implement checks for blocked users and message ownership.
 
-## Phase 2: Real-time with Socket.io
+## Phase 2: Real-time with Socket.io [checkpoint: 659c6d9]
 - [x] Task: Setup Socket.io Server (18abebf)
     - Initialize Socket.io on the Node.js server.
     - Implement room logic (per conversation).
