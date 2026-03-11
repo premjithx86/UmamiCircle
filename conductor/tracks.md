@@ -21,10 +21,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] ~~**Track: Core Social UI: User Profiles and Social Interaction Components**~~ (Archived)
   *Link: [./archive/user_profiles_social_ui_20260311/](./archive/user_profiles_social_ui_20260311/)*
 
----
-
-- [x] **Track: Content Engagement UI: Post and Recipe Display/Interaction**
-  *Link: [./tracks/content_engagement_ui_20260311/](./tracks/content_engagement_ui_20260311/)*
+- [x] ~~**Track: Content Engagement UI: Post and Recipe Display/Interaction**~~ (Archived)
+  *Link: [./archive/content_engagement_ui_20260311/](./archive/content_engagement_ui_20260311/)*
 
 ---
 
