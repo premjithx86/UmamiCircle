@@ -16,7 +16,7 @@
     - Build emitters and listeners for `new_message`, `typing`, and `message_read`.
 
 ## Phase 3: Messaging Frontend
-- [ ] Task: Build Conversation List UI
+- [x] Task: Build Conversation List UI (f885fb6)
     - Design sidebar with recent chats and status indicators.
 - [ ] Task: Build Chat Window UI
     - Design message bubbles, typing indicators, and message input.
