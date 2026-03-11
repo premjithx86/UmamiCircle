@@ -1,7 +1,7 @@
 # Implementation Plan: User Profiles and Social UI
 
 ## Phase 1: User Profile Infrastructure
-- [ ] Task: Create Profile Header Component
+- [x] Task: Create Profile Header Component (ea1e1cf)
     - Implement avatar, bio, and stats (post count, follower count).
     - Design Follow/Unfollow button logic.
 - [ ] Task: Implement Profile Content Tabs
