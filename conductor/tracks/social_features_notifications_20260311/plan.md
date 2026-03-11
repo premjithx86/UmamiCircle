@@ -15,7 +15,7 @@
 - [x] Task: Implement Follow/Unfollow Routes (40e44de)
     - [ ] Create `POST /api/social/follow/:id` and `POST /api/social/unfollow/:id`.
     - [ ] Implement logic to update both users' follow/following lists.
-- [ ] Task: Implement Block/Report Routes
+- [x] Task: Implement Block/Report Routes (d75045e)
     - [ ] Create `POST /api/social/block/:id` and `POST /api/social/unblock/:id`.
     - [ ] Create `POST /api/social/report/:type/:id` (User, Post, or Recipe).
     - [ ] Implement blocking logic to prevent interactions.
