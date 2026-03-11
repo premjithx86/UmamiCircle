@@ -14,6 +14,7 @@ const MainLayout = () => {
             <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-primary">Home</Link>
             <Link to="/explore" className="text-gray-600 dark:text-gray-300 hover:text-primary">Explore</Link>
             <Link to="/notifications" className="text-gray-600 dark:text-gray-300 hover:text-primary">Notifications</Link>
+            <Link to="/messages" className="text-gray-600 dark:text-gray-300 hover:text-primary">Messages</Link>
             <button
               onClick={toggleDarkMode}
               className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"

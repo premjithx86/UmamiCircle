@@ -35,7 +35,7 @@ export const ChatWindow = ({
 
   if (!conversation) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900/50">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900/50" data-testid="chat-window">
         <p className="text-gray-500">Select a conversation to start chatting</p>
       </div>
     );
