@@ -1,14 +1,16 @@
 import React from 'react';
 
-const Input = ({ label, type = 'text', value, onChange, placeholder, error, className = '', ...props }) => {
+const Input = ({ label, id, type = 'text', value, onChange, placeholder, error, className = '', ...props }) => {
+  const inputId = id || props.name;
   return (
     <div className={`flex flex-col space-y-1 ${className}`}>
       {label && (
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor={inputId} className="text-sm font-medium text-gray-700 dark:text-gray-300">
           {label}
         </label>
       )}
       <input
+        id={inputId}
         type={type}
         value={value}
         onChange={onChange}
