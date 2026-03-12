@@ -1,51 +1,46 @@
-const {
-	RegExpMatcher,
-	englishDataset,
-	asteriskCensorStrategy,
-	TextCensor,
-} = require("obscenity");
+const { 
+  RegExpMatcher, 
+  englishDataset, 
+  englishRecommendedTransformers 
+} = require('obscenity');
 const { validateFoodRelevance } = require("../services/moderationService");
 
 const matcher = new RegExpMatcher({
-	...englishDataset.build(),
+  ...englishDataset.build(),
+  ...englishRecommendedTransformers,
 });
-const censor = new TextCensor();
-const strategy = asteriskCensorStrategy(Buffer.from("*")[0]);
 
 /**
  * Middleware for text moderation.
  */
 const moderateText = async (req, res, next) => {
-	const textToModerate = req.body.caption || req.body.description || req.body.title;
+  const textToModerate = req.body.caption || req.body.description || req.body.title;
 
-	if (!textToModerate) {
-		return next();
-	}
+  if (!textToModerate) {
+    return next();
+  }
 
-	try {
-		// 1. Profanity check (obscenity)
-		const matches = matcher.getAllMatches(textToModerate);
-		if (matches.length > 0) {
-			const censored = censor.applyStrategy(textToModerate, strategy, matches);
-			req.censoredText = censored;
-      // Option: Return 400 or just censor.
-      // For this project, we'll reject if too profane or censor.
-      // Let's censor it and move to food relevance.
-		} else {
-      req.censoredText = textToModerate;
+  try {
+    // 1. Profanity check (obscenity)
+    const hasProfanity = matcher.hasMatch(textToModerate);
+    if (hasProfanity) {
+      return res.status(400).json({ error: "Content contains inappropriate language" });
     }
 
-		// 2. Food Relevance check (Groq)
-		const relevance = await validateFoodRelevance(textToModerate);
-		if (!relevance.relevant) {
-			return res.status(400).json({ error: "Content must be food-related" });
-		}
+    // Since we reject profanity now, req.censoredText is just the original text
+    req.censoredText = textToModerate;
 
-		next();
-	} catch (error) {
-		console.error("Text moderation error:", error);
-		res.status(500).json({ error: "Failed to process text moderation" });
-	}
+    // 2. Food Relevance check (Groq)
+    const relevance = await validateFoodRelevance(textToModerate);
+    if (!relevance.relevant) {
+      return res.status(400).json({ error: "Content must be food-related" });
+    }
+
+    next();
+  } catch (error) {
+    console.error("Text moderation error:", error);
+    res.status(500).json({ error: "Failed to process text moderation" });
+  }
 };
 
 module.exports = { moderateText };

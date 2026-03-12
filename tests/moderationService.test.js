@@ -14,9 +14,9 @@ describe("Moderation Service Test", () => {
     expect(res.safe).toBe(true);
   });
 
-  it("should return isFood for mocked food verification", async () => {
+  it("should return true for mocked food verification", async () => {
     const res = await verifyFoodContent(Buffer.from("dummy"));
-    expect(res.isFood).toBe(true);
+    expect(res).toBe(true);
   });
 
   it("should return relevant for mocked food relevance check", async () => {
