@@ -34,8 +34,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Admin Panel: Content Moderation, Reports, and Activity Logs**
-  *Link: [./tracks/admin_panel_ops_20260311/](./tracks/admin_panel_ops_20260311/)*
+- [x] ~~**Track: Admin Panel: Content Moderation, Reports, and Activity Logs**~~ (Archived)
+  *Link: [./archive/admin_panel_ops_20260311/](./archive/admin_panel_ops_20260311/)*
 
 ---
 
