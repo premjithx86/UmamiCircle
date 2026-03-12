@@ -6,6 +6,8 @@
     - Implement Hugging Face food detection using `HUGGINGFACE_API_KEY` (REST API).
     - Ensure Cloudinary, Sightengine, Hugging Face, and Groq keys are used from `process.env`.
     - **Fix:** Corrected Sightengine call to use `multipart/form-data` with `axios` and `form-data` package.
+    - **Improvement:** Implemented tag filtering for profanity and food relevance in `textModerationMiddleware.js`.
+    - **Improvement:** Implemented image deduplication and caching using MD5 hashes and `ModerationCache` collection.
 - [x] Task: Create `uploadRoutes.js` (acf4124)
     - Implement `POST /api/upload` endpoint.
     - Integrate `processImageModeration` middleware.

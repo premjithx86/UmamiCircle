@@ -11,29 +11,52 @@ const matcher = new RegExpMatcher({
 });
 
 /**
- * Middleware for text moderation.
+ * Middleware for text moderation, including main content and tags.
  */
 const moderateText = async (req, res, next) => {
-  const textToModerate = req.body.caption || req.body.description || req.body.title;
-
-  if (!textToModerate) {
-    return next();
-  }
+  const { caption, description, title, tags } = req.body;
+  const mainText = caption || description || title;
 
   try {
-    // 1. Profanity check (obscenity)
-    const hasProfanity = matcher.hasMatch(textToModerate);
-    if (hasProfanity) {
-      return res.status(400).json({ error: "Content contains inappropriate language" });
+    // 1. Moderate main content if it exists
+    if (mainText) {
+      const hasProfanity = matcher.hasMatch(mainText);
+      if (hasProfanity) {
+        return res.status(400).json({ error: "Content contains inappropriate language" });
+      }
+
+      const relevance = await validateFoodRelevance(mainText);
+      if (!relevance.relevant) {
+        return res.status(400).json({ error: "Content must be food-related" });
+      }
+      
+      req.censoredText = mainText;
     }
 
-    // Since we reject profanity now, req.censoredText is just the original text
-    req.censoredText = textToModerate;
+    // 2. Moderate tags if they exist
+    if (tags) {
+      let tagArray = [];
+      try {
+        tagArray = typeof tags === 'string' ? JSON.parse(tags) : tags;
+      } catch (e) {
+        // If parsing fails, treat as a single string (unlikely given frontend code)
+        tagArray = [tags];
+      }
 
-    // 2. Food Relevance check (Groq)
-    const relevance = await validateFoodRelevance(textToModerate);
-    if (!relevance.relevant) {
-      return res.status(400).json({ error: "Content must be food-related" });
+      if (Array.isArray(tagArray)) {
+        for (const tag of tagArray) {
+          // Check each tag for profanity
+          if (matcher.hasMatch(tag)) {
+            return res.status(400).json({ error: `Tag "${tag}" contains inappropriate language` });
+          }
+
+          // Check each tag for food relevance
+          const tagRelevance = await validateFoodRelevance(tag);
+          if (!tagRelevance.relevant) {
+            return res.status(400).json({ error: `Tag "${tag}" must be food-related` });
+          }
+        }
+      }
     }
 
     next();

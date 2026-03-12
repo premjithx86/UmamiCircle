@@ -1,6 +1,6 @@
 const multer = require("multer");
 const { generateHash, checkImageSafety, verifyFoodContent, uploadToCloudinary } = require("../services/moderationService");
-const Post = require("../models/Post"); // To check for existing hashes
+const ModerationCache = require("../models/ModerationCache");
 
 // Use memory storage to handle the buffer directly for hashing and moderation
 const storage = multer.memoryStorage();
@@ -20,7 +20,7 @@ const upload = multer({
 });
 
 /**
- * Middleware to process, moderate, and upload the image.
+ * Middleware to process, moderate, and upload the image with deduplication.
  */
 const processImageModeration = async (req, res, next) => {
   if (!req.file) {
@@ -32,31 +32,59 @@ const processImageModeration = async (req, res, next) => {
     const hash = generateHash(req.file.buffer);
     req.imageHash = hash;
 
-    // Check if image already exists in DB (Deduplication)
-    const existingPost = await Post.findOne({ imageHash: hash });
-    if (existingPost) {
-      req.imageUrl = existingPost.imageUrl;
-      req.isDuplicate = true;
-      return next(); // Skip further moderation and upload
+    // 2. Check Moderation Cache
+    const cachedResult = await ModerationCache.findOne({ imageHash: hash });
+    
+    if (cachedResult) {
+      if (cachedResult.status === 'rejected') {
+        return res.status(400).json({ 
+          error: cachedResult.reason || "Image previously rejected by moderation" 
+        });
+      }
+      
+      if (cachedResult.status === 'approved') {
+        req.imageUrl = cachedResult.cloudinaryUrl;
+        req.isDuplicate = true;
+        return next();
+      }
     }
 
-    // 2. NSFW Check (Sightengine)
+    // 3. NSFW Check (Sightengine)
     const safety = await checkImageSafety(req.file.buffer);
     if (!safety.safe) {
+      // Save rejection to cache
+      await ModerationCache.create({
+        imageHash: hash,
+        status: 'rejected',
+        reason: "Image failed safety check (NSFW detected)"
+      });
       return res.status(400).json({ error: "Image failed safety check (NSFW detected)" });
     }
 
-    // 3. Food Content Check (Hugging Face)
+    // 4. Food Content Check (Hugging Face)
     try {
       await verifyFoodContent(req.file.buffer);
     } catch (foodError) {
+      // Save rejection to cache
+      await ModerationCache.create({
+        imageHash: hash,
+        status: 'rejected',
+        reason: foodError.message
+      });
       return res.status(400).json({ error: foodError.message });
     }
 
-    // 4. Upload to Cloudinary
+    // 5. Upload to Cloudinary
     const uploadResult = await uploadToCloudinary(req.file.buffer);
     req.imageUrl = uploadResult.secure_url;
     req.isDuplicate = false;
+
+    // 6. Save approval to cache
+    await ModerationCache.create({
+      imageHash: hash,
+      status: 'approved',
+      cloudinaryUrl: uploadResult.secure_url
+    });
 
     next();
   } catch (error) {
