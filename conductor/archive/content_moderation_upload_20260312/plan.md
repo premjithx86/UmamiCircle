@@ -8,6 +8,7 @@
     - **Fix:** Corrected Sightengine call to use `multipart/form-data` with `axios` and `form-data` package.
     - **Improvement:** Implemented tag filtering for profanity and food relevance in `textModerationMiddleware.js`.
     - **Improvement:** Implemented image deduplication and caching using MD5 hashes and `ModerationCache` collection.
+    - **Fix:** Removed incorrect `unique: true` constraint from `imageHash` in Post and Recipe models to allow multiple posts with the same image.
 - [x] Task: Create `uploadRoutes.js` (acf4124)
     - Implement `POST /api/upload` endpoint.
     - Integrate `processImageModeration` middleware.
