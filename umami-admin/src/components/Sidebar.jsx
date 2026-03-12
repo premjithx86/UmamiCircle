@@ -6,7 +6,8 @@ import {
   FileText, 
   AlertCircle, 
   LogOut, 
-  History 
+  History,
+  Layout
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
@@ -19,6 +20,7 @@ const Sidebar = () => {
     { name: 'Content Moderation', path: '/content', icon: FileText },
     { name: 'Reports', path: '/reports', icon: AlertCircle },
     { name: 'Activity Logs', path: '/logs', icon: History },
+    { name: 'CMS', path: '/cms', icon: Layout },
   ];
 
   return (

@@ -8,6 +8,7 @@ import { UserManagement } from './pages/UserManagement';
 import { ModerationQueue } from './pages/ModerationQueue';
 import { Reports } from './pages/Reports';
 import { ActivityLogs } from './pages/ActivityLogs';
+import { CMSComingSoon } from './pages/CMSComingSoon';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="content" element={<ModerationQueue />} />
             <Route path="reports" element={<Reports />} />
             <Route path="logs" element={<ActivityLogs />} />
+            <Route path="cms" element={<CMSComingSoon />} />
           </Route>
         </Routes>
       </Router>
