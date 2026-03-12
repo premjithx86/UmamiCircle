@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const cloudinary = require("cloudinary").v2;
-const Sightengine = require("sightengine");
+const axios = require("axios");
+const FormData = require("form-data");
 const { Groq } = require("groq-sdk");
 
 // Configure Cloudinary
@@ -9,10 +10,6 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
-const sightengine = process.env.SIGHTENGINE_API_USER 
-  ? new Sightengine(process.env.SIGHTENGINE_API_USER, process.env.SIGHTENGINE_API_SECRET)
-  : null;
 
 const groq = process.env.GROQ_API_KEY 
   ? new Groq({ apiKey: process.env.GROQ_API_KEY })
@@ -29,20 +26,30 @@ const generateHash = (buffer) => {
 };
 
 /**
- * Checks image safety using Sightengine.
+ * Checks image safety using Sightengine API via Axios.
  */
 const checkImageSafety = async (imageBuffer) => {
   if (process.env.NODE_ENV === "test") {
     return { safe: true };
   }
 
-  if (!sightengine) {
+  if (!process.env.SIGHTENGINE_API_USER || !process.env.SIGHTENGINE_API_SECRET) {
     console.warn("Sightengine not configured. Skipping safety check.");
     return { safe: true };
   }
 
   try {
-    const result = await sightengine.check(['nudity', 'wad', 'offensive']).set_bytes(imageBuffer);
+    const form = new FormData();
+    form.append('media', imageBuffer, { filename: 'image.jpg', contentType: 'image/jpeg' });
+    form.append('models', 'nudity,offensive,wad');
+    form.append('api_user', process.env.SIGHTENGINE_API_USER);
+    form.append('api_secret', process.env.SIGHTENGINE_API_SECRET);
+
+    const response = await axios.post('https://api.sightengine.com/1.0/check.json', form, {
+      headers: form.getHeaders()
+    });
+
+    const result = response.data;
     
     if (result.status === 'failure') {
       throw new Error(result.error.message);
@@ -60,7 +67,7 @@ const checkImageSafety = async (imageBuffer) => {
       details: result 
     };
   } catch (error) {
-    console.error("Sightengine error:", error.message);
+    console.error("Sightengine error:", error.response?.data?.error?.message || error.message);
     throw error;
   }
 };

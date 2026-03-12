@@ -5,6 +5,7 @@
     - Replace mocks with real fetch/SDK calls for Sightengine and Google Vision.
     - Implement Google Vision food detection using `GOOGLE_VISION_KEY` (REST API).
     - Ensure Cloudinary, Sightengine, Google Vision, and Groq keys are used from `process.env`.
+    - **Fix:** Corrected Sightengine call to use `multipart/form-data` with `axios` and `form-data` package.
 - [x] Task: Create `uploadRoutes.js` (acf4124)
     - Implement `POST /api/upload` endpoint.
     - Integrate `processImageModeration` middleware.

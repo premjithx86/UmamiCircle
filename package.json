@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/vision": "^5.3.4",
+    "axios": "^1.13.6",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
@@ -19,6 +20,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.1",
     "firebase-admin": "^13.7.0",
+    "form-data": "^4.0.5",
     "groq-sdk": "^0.37.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
