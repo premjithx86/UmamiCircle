@@ -7,7 +7,7 @@
     - Design the "Moderation Queue" for human review.
     - Integrate AI moderation scores into the view.
 
-## Phase 2: Report Handling System
+## Phase 2: Report Handling System [checkpoint: a7ca7fc]
 - [x] Task: Report Management API (1409161)
     - Build endpoints to fetch, update, and resolve reports.
 - [x] Task: Build Report Inbox UI (9f2128a)
