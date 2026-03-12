@@ -5,7 +5,9 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const Recipe = require("../models/Recipe");
 const Report = require("../models/Report");
+const AuditLog = require("../models/AuditLog");
 const { adminAuth, authorizeRoles } = require("../middleware/adminAuth");
+const { logAction } = require("../services/auditService");
 const router = express.Router();
 
 /**
@@ -99,6 +101,16 @@ router.patch("/users/:id/block", adminAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
+    await logAction({
+      adminId: req.admin._id,
+      action: isBlocked ? "BLOCK_USER" : "UNBLOCK_USER",
+      targetType: "User",
+      targetId: user._id,
+      details: { username: user.username },
+      ipAddress: req.ip,
+    });
+
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -116,6 +128,16 @@ router.delete("/users/:id", adminAuth, authorizeRoles("Admin", "SuperAdmin"), as
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
+    await logAction({
+      adminId: req.admin._id,
+      action: "DELETE_USER",
+      targetType: "User",
+      targetId: user._id,
+      details: { username: user.username, email: user.email },
+      ipAddress: req.ip,
+    });
+
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -158,6 +180,16 @@ router.delete("/content/posts/:id", adminAuth, async (req, res) => {
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
+
+    await logAction({
+      adminId: req.admin._id,
+      action: "DELETE_POST",
+      targetType: "Post",
+      targetId: post._id,
+      details: { caption: post.caption },
+      ipAddress: req.ip,
+    });
+
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -203,6 +235,16 @@ router.delete("/content/recipes/:id", adminAuth, async (req, res) => {
     if (!recipe) {
       return res.status(404).json({ error: "Recipe not found" });
     }
+
+    await logAction({
+      adminId: req.admin._id,
+      action: "DELETE_RECIPE",
+      targetType: "Recipe",
+      targetId: recipe._id,
+      details: { title: recipe.title },
+      ipAddress: req.ip,
+    });
+
     res.status(200).json({ message: "Recipe deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -252,7 +294,48 @@ router.patch("/reports/:id", adminAuth, async (req, res) => {
     if (!report) {
       return res.status(404).json({ error: "Report not found" });
     }
+
+    await logAction({
+      adminId: req.admin._id,
+      action: "RESOLVE_REPORT",
+      targetType: "Report",
+      targetId: report._id,
+      details: { status, adminComment, targetType: report.targetType, targetId: report.targetId },
+      ipAddress: req.ip,
+    });
+
     res.status(200).json(report);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @route GET /api/admin/logs
+ * @desc List and filter audit logs
+ * @access Private (Admin)
+ */
+router.get("/logs", adminAuth, async (req, res) => {
+  try {
+    const { action, targetType, adminId } = req.query;
+    let query = {};
+    
+    if (action) {
+      query.action = action;
+    }
+    
+    if (targetType) {
+      query.targetType = targetType;
+    }
+
+    if (adminId) {
+      query.admin = adminId;
+    }
+
+    const logs = await AuditLog.find(query)
+      .populate("admin", "username role")
+      .sort({ createdAt: -1 });
+    res.status(200).json(logs);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
