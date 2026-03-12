@@ -11,6 +11,8 @@ import { Profile } from './pages/Profile';
 import { PostDetail } from './pages/PostDetail';
 import { RecipeDetail } from './pages/RecipeDetail';
 import { Chat } from './pages/Chat';
+import { Login } from './pages/Login';
+import { Signup } from './pages/Signup';
 
 function App() {
   return (
@@ -19,6 +21,11 @@ function App() {
         <ThemeProvider>
           <Router>
             <Routes>
+              {/* Auth Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+
+              {/* Main App Routes */}
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<Home />} />
                 <Route path="explore" element={<Explore />} />
