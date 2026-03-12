@@ -10,7 +10,7 @@
 ## Phase 2: Report Handling System
 - [x] Task: Report Management API (1409161)
     - Build endpoints to fetch, update, and resolve reports.
-- [ ] Task: Build Report Inbox UI
+- [x] Task: Build Report Inbox UI (9f2128a)
     - Design the admin interface for managing user-submitted reports.
     - Implement resolution actions (Warning/Take down/Dismiss).
 
