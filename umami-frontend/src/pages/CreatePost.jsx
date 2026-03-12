@@ -64,7 +64,7 @@ const CreatePost = () => {
       }
     } catch (err) {
       console.error(err);
-      const errorMessage = err.response?.data?.error || 'An unexpected error occurred. Please try again.';
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'An unexpected error occurred. Please try again.';
       setError(errorMessage);
       setStatus('idle');
     }
