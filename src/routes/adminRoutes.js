@@ -4,6 +4,7 @@ const Admin = require("../models/Admin");
 const User = require("../models/User");
 const Post = require("../models/Post");
 const Recipe = require("../models/Recipe");
+const Report = require("../models/Report");
 const { adminAuth, authorizeRoles } = require("../middleware/adminAuth");
 const router = express.Router();
 
@@ -203,6 +204,55 @@ router.delete("/content/recipes/:id", adminAuth, async (req, res) => {
       return res.status(404).json({ error: "Recipe not found" });
     }
     res.status(200).json({ message: "Recipe deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @route GET /api/admin/reports
+ * @desc List and filter reports
+ * @access Private (Admin)
+ */
+router.get("/reports", adminAuth, async (req, res) => {
+  try {
+    const { status, targetType } = req.query;
+    let query = {};
+    
+    if (status) {
+      query.status = status;
+    }
+    
+    if (targetType) {
+      query.targetType = targetType;
+    }
+
+    const reports = await Report.find(query)
+      .populate("reporter", "username email")
+      .sort({ createdAt: -1 });
+    res.status(200).json(reports);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @route PATCH /api/admin/reports/:id
+ * @desc Update report status or add admin comment
+ * @access Private (Admin)
+ */
+router.patch("/reports/:id", adminAuth, async (req, res) => {
+  try {
+    const { status, adminComment } = req.body;
+    const report = await Report.findByIdAndUpdate(
+      req.params.id,
+      { status, adminComment },
+      { returnDocument: "after" }
+    );
+    if (!report) {
+      return res.status(404).json({ error: "Report not found" });
+    }
+    res.status(200).json(report);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
