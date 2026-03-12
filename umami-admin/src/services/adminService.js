@@ -42,3 +42,45 @@ export const deleteUser = async (userId) => {
   });
   return response.data;
 };
+
+export const getPosts = async (params = {}) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.get(`${API_URL}/content/posts`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const deletePost = async (postId) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.delete(`${API_URL}/content/posts/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const getRecipes = async (params = {}) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.get(`${API_URL}/content/recipes`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const deleteRecipe = async (recipeId) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.delete(`${API_URL}/content/recipes/${recipeId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};

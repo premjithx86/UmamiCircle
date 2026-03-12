@@ -5,9 +5,9 @@ import { AdminLayout } from './layouts/AdminLayout';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { UserManagement } from './pages/UserManagement';
+import { ModerationQueue } from './pages/ModerationQueue';
 
 // Placeholder components
-const ContentModeration = () => <h1 className="text-2xl font-bold">Content Moderation</h1>;
 const Reports = () => <h1 className="text-2xl font-bold">Reports</h1>;
 const ActivityLogs = () => <h1 className="text-2xl font-bold">Activity Logs</h1>;
 
@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="users" element={<UserManagement />} />
-            <Route path="content" element={<ContentModeration />} />
+            <Route path="content" element={<ModerationQueue />} />
             <Route path="reports" element={<Reports />} />
             <Route path="logs" element={<ActivityLogs />} />
           </Route>
