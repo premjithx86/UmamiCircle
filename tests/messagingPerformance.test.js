@@ -24,7 +24,8 @@ describe("Messaging Performance and Stress Test", () => {
     await User.deleteMany({});
     await Conversation.deleteMany({});
 
-    user1 = new User({ firebaseUID: "u1", username: "u1", name: "User 1", email: "u1@test.com" });
+    // Use mock-uid-123 to match the bypass in authMiddleware
+    user1 = new User({ firebaseUID: "mock-uid-123", username: "u1", name: "User 1", email: "u1@test.com" });
     await user1.save();
     user2 = new User({ firebaseUID: "u2", username: "u2", name: "User 2", email: "u2@test.com" });
     await user2.save();
@@ -32,23 +33,23 @@ describe("Messaging Performance and Stress Test", () => {
     conversation = new Conversation({ participants: [user1._id, user2._id] });
     await conversation.save();
   });
-it("should handle 50 messages sent in succession", async () => {
-  const messageCount = 50;
 
-  for (let i = 0; i < messageCount; i++) {
-    const res = await request(app)
-      .post("/api/messages")
-      .set("Authorization", "Bearer uid-1")
-      .send({
-        conversationId: conversation._id,
-        content: `Stress test message ${i}`
-      });
+  it("should handle 50 messages sent in succession", async () => {
+    const messageCount = 50;
 
-    expect(res.status).toBe(201);
-  }
+    for (let i = 0; i < messageCount; i++) {
+      const res = await request(app)
+        .post("/api/messages")
+        .set("Authorization", "Bearer mock-token")
+        .send({
+          conversationId: conversation._id,
+          content: `Stress test message ${i}`
+        });
+      
+      expect(res.status).toBe(201);
+    }
 
-  const updatedConversation = await Conversation.findById(conversation._id);
-  expect(updatedConversation.lastMessage).toBeDefined();
-}, 30000); // Increase timeout to 30s
-  });
+    const updatedConversation = await Conversation.findById(conversation._id);
+    expect(updatedConversation.lastMessage).toBeDefined();
+  }, 30000); // Increase timeout to 30s
 });
