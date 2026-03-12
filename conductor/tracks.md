@@ -49,5 +49,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Content Moderation & Upload Pipeline Connection**
-  *Link: [./tracks/content_moderation_upload_20260312/](./tracks/content_moderation_upload_20260312/)*
+- [x] ~~**Track: Content Moderation & Upload Pipeline Connection**~~ (Archived)
+  *Link: [./archive/content_moderation_upload_20260312/](./archive/content_moderation_upload_20260312/)*

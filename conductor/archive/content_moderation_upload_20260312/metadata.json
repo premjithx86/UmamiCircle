@@ -1,0 +1,7 @@
+{
+  "id": "content_moderation_upload_20260312",
+  "title": "Content Moderation & Upload Pipeline Connection",
+  "description": "Connecting frontend post/recipe creation to the real backend moderation and upload pipeline.",
+  "status": "todo",
+  "created_at": "2026-03-12"
+}
