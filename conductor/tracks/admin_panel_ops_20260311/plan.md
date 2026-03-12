@@ -8,7 +8,7 @@
     - Integrate AI moderation scores into the view.
 
 ## Phase 2: Report Handling System
-- [ ] Task: Report Management API
+- [x] Task: Report Management API (1409161)
     - Build endpoints to fetch, update, and resolve reports.
 - [ ] Task: Build Report Inbox UI
     - Design the admin interface for managing user-submitted reports.
