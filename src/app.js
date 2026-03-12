@@ -1,13 +1,40 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 
 const app = express();
 
+// Global Rate Limiting
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: { error: "Too many requests, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Stricter Rate Limiting for Auth/Sensitive routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Limit each IP to 20 attempts per 15 minutes
+  message: { error: "Too many login/signup attempts, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+
+// Apply general limiter to all routes
+app.use("/api/", generalLimiter);
+
+// Apply strict limiter to auth routes
+app.use("/api/users/login", authLimiter);
+app.use("/api/users/signup", authLimiter);
+app.use("/api/admin/login", authLimiter);
 
 const userRoutes = require("./routes/userRoutes");
 const postRoutes = require("./routes/postRoutes");
@@ -27,7 +54,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/messages", messagingRoutes.messagingRouter);
 app.use("/api/admin", adminRoutes);
 
-app.get("/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
