@@ -17,7 +17,7 @@
 ## Phase 3: Auditing and Logging
 - [x] Task: Admin Activity Logs (86c8ab8)
     - Implement a logging service to track all admin actions in the DB.
-- [ ] Task: Build Activity Log UI
+- [x] Task: Build Activity Log UI (534703b)
     - Design the searchable audit trail interface for admins.
 
 ## Phase: Final Verification
