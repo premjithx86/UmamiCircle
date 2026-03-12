@@ -12,7 +12,7 @@
 - [x] Task: Asset and Code Optimization (acf4124)
     - Implement image lazy loading and Cloudinary transformations.
     - Audit and optimize bundle size with Vite.
-- [ ] Task: Caching and Load Speed
+- [x] Task: Caching and Load Speed (414d630)
     - Setup service worker or browser-level caching for static assets.
 
 ## Phase 3: Production Readiness
