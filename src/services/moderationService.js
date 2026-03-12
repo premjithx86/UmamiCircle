@@ -79,7 +79,7 @@ async function verifyFoodContent(imageBuffer) {
   }
 
   const response = await fetch(
-    "https://api-inference.huggingface.co/models/nateraw/food",
+    "https://router.huggingface.co/hf-inference/models/nateraw/food",
     {
       headers: { 
         Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
