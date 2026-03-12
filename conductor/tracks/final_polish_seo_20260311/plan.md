@@ -4,7 +4,7 @@
 - [x] Task: Dynamic Meta and OG Implementation (c2c8d39)
     - Setup `react-helmet-async` for managing head tags.
     - Implement dynamic meta tags based on post/recipe data.
-- [ ] Task: Structured Data (JSON-LD) for Recipes
+- [x] Task: Structured Data (JSON-LD) for Recipes (ec850d8)
     - Generate and inject JSON-LD scripts into recipe pages.
     - Verify with Google's Rich Results Test.
 
