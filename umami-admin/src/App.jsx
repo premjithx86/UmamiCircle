@@ -7,9 +7,7 @@ import { Dashboard } from './pages/Dashboard';
 import { UserManagement } from './pages/UserManagement';
 import { ModerationQueue } from './pages/ModerationQueue';
 import { Reports } from './pages/Reports';
-
-// Placeholder components
-const ActivityLogs = () => <h1 className="text-2xl font-bold">Activity Logs</h1>;
+import { ActivityLogs } from './pages/ActivityLogs';
 
 function App() {
   return (

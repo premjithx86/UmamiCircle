@@ -105,3 +105,14 @@ export const updateReport = async (reportId, data) => {
   });
   return response.data;
 };
+
+export const getAuditLogs = async (params = {}) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.get(`${API_URL}/logs`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
