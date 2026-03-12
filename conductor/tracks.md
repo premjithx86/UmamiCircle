@@ -46,3 +46,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] ~~**Track: Frontend Completion: Auth, Feed, Creation, and Dark Mode**~~ (Archived)
   *Link: [./archive/frontend_completion_20260312/](./archive/frontend_completion_20260312/)*
+
+---
+
+- [ ] **Track: Content Moderation & Upload Pipeline Connection**
+  *Link: [./tracks/content_moderation_upload_20260312/](./tracks/content_moderation_upload_20260312/)*
