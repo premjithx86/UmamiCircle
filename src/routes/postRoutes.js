@@ -45,6 +45,95 @@ router.post("/", authMiddleware, upload.single("image"), moderateText, processIm
 });
 
 /**
+ * Get the home feed (posts from users the current user follows)
+ */
+router.get("/following", authMiddleware, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const userDoc = await User.findOne({ firebaseUID: req.user.uid });
+    if (!userDoc) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Include user's own posts plus posts from people they follow
+    const userIds = [...userDoc.following, userDoc._id];
+
+    const posts = await Post.find({ user: { $in: userIds } })
+      .populate("user", "username profilePicUrl")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Error fetching home feed:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Get exploration feed (all posts, trending first)
+ */
+router.get("/explore", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 15;
+    const skip = (page - 1) * limit;
+
+    // Simple trending logic: Sort by number of likes then by date
+    const posts = await Post.find()
+      .populate("user", "username profilePicUrl")
+      .sort({ likes: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Error fetching explore feed:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Search posts and recipes
+ */
+router.get("/search", async (req, res) => {
+  try {
+    const { q, type, tags } = req.query;
+    let query = {};
+
+    if (q) {
+      query.$or = [
+        { caption: { $regex: q, $options: "i" } },
+        { title: { $regex: q, $options: "i" } },
+      ];
+    }
+
+    if (tags) {
+      const tagArray = Array.isArray(tags) ? tags : [tags];
+      query.tags = { $in: tagArray };
+    }
+
+    // Optional filtering by type if we separate models in the future
+    // for now Post and Recipe are separate, so we might need a more complex search
+    // or just search Posts (which currently includes recipes in some logic?)
+    // Let's check Recipe model
+    
+    const posts = await Post.find(query)
+      .populate("user", "username profilePicUrl")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Search error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * Toggle like/unlike on a post
  */
 router.post("/like/:id", authMiddleware, async (req, res) => {

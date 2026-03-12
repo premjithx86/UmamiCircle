@@ -73,4 +73,24 @@ router.put("/me", authMiddleware, stripRole, async (req, res) => {
   }
 });
 
+// Search users
+router.get("/search", async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) return res.status(200).json([]);
+
+    const users = await User.find({
+      $or: [
+        { username: { $regex: q, $options: "i" } },
+        { name: { $regex: q, $options: "i" } }
+      ]
+    }).select("username name profilePicUrl bio")
+      .limit(20);
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
