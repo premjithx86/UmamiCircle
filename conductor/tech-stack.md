@@ -11,6 +11,7 @@
 - **Authentication:** Firebase Authentication
 - **Image Storage:** Cloudinary
 - **Real-time Messaging:** Socket.io
+- **SEO & Meta Data:** `react-helmet-async` + JSON-LD (Schema.org)
 - **Content Moderation:**
     - **Image:** Sightengine API (NSFW detection) + Google Cloud Vision API (food recognition)
     - **Text:** `obscenity` (NPM Package) + Groq API (food relevance validation)
@@ -18,6 +19,8 @@
 ## Security & Backend
 - **Admin Authentication:** JWT + `bcrypt`
 - **Backend Security:** `helmet.js`
+- **Rate Limiting:** `express-rate-limit`
+- **Performance Optimization:** `vite-plugin-pwa` (Service Workers)
 
 ## Infrastructure & Hosting
 - **To be determined based on deployment preferences.**
