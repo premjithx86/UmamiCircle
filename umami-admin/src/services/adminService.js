@@ -84,3 +84,24 @@ export const deleteRecipe = async (recipeId) => {
   });
   return response.data;
 };
+
+export const getReports = async (params = {}) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.get(`${API_URL}/reports`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const updateReport = async (reportId, data) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.patch(`${API_URL}/reports/${reportId}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};

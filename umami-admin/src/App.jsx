@@ -6,9 +6,9 @@ import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { UserManagement } from './pages/UserManagement';
 import { ModerationQueue } from './pages/ModerationQueue';
+import { Reports } from './pages/Reports';
 
 // Placeholder components
-const Reports = () => <h1 className="text-2xl font-bold">Reports</h1>;
 const ActivityLogs = () => <h1 className="text-2xl font-bold">Activity Logs</h1>;
 
 function App() {
