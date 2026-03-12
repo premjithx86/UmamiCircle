@@ -23,5 +23,5 @@
     - Run all backend and frontend tests to ensure stability.
 
 ## Phase: Final Verification
-- [ ] Task: Final Lighthouse Performance Audit
-- [ ] Task: Verification of Sitemap and SEO discoverability
+- [x] Task: Final Lighthouse Performance Audit
+- [x] Task: Verification of Sitemap and SEO discoverability
