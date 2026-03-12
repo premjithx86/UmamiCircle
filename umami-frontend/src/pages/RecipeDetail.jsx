@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
 import { RecipeJSONLD } from '../components/RecipeJSONLD';
+import { OptimizedImage } from '../components/OptimizedImage';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
 import { TagList } from '../components/TagList';
@@ -80,9 +81,11 @@ export const RecipeDetail = () => {
       <RecipeJSONLD recipe={recipe} />
       {/* Hero Section */}
       <div className="relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-lg">
-        <img
+        <OptimizedImage
           src={recipe.imageUrl}
           alt={recipe.title}
+          width={1200}
+          lazy={false}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6 md:p-10">

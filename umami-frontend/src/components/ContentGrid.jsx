@@ -1,4 +1,5 @@
 import React from 'react';
+import { OptimizedImage } from './OptimizedImage';
 
 const ContentGrid = ({ items = [], emptyMessage = "No content yet." }) => {
   if (items.length === 0) {
@@ -17,9 +18,11 @@ const ContentGrid = ({ items = [], emptyMessage = "No content yet." }) => {
           key={item._id}
           className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-lg group cursor-pointer"
         >
-          <img
+          <OptimizedImage
             src={item.imageUrl}
             alt={item.title || item.caption || 'Content image'}
+            width={400}
+            height={400}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">

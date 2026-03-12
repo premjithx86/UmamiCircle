@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './Button';
+import { OptimizedImage } from './OptimizedImage';
 
 const ProfileHeader = ({ user, isOwnProfile, isFollowing, onFollowToggle, onEditProfile }) => {
   if (!user) return null;
@@ -8,9 +9,11 @@ const ProfileHeader = ({ user, isOwnProfile, isFollowing, onFollowToggle, onEdit
     <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
       {/* Avatar */}
       <div className="relative">
-        <img
+        <OptimizedImage
           src={user.avatar || 'https://via.placeholder.com/150'}
           alt={`${user.username}'s avatar`}
+          width={128}
+          height={128}
           className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-primary/10 p-1"
         />
       </div>

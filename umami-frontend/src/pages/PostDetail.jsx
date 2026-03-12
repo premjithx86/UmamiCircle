@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
+import { OptimizedImage } from '../components/OptimizedImage';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
 import { TagList } from '../components/TagList';
@@ -67,9 +68,11 @@ export const PostDetail = () => {
         <div className="flex flex-col md:flex-row h-full md:max-h-[700px]">
           {/* Image Section */}
           <div className="md:w-3/5 bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 overflow-hidden">
-            <img
+            <OptimizedImage
               src={post.imageUrl}
               alt="Post image"
+              width={1200}
+              lazy={false}
               className="w-full h-full object-contain"
             />
           </div>
