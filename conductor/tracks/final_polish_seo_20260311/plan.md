@@ -8,7 +8,7 @@
     - Generate and inject JSON-LD scripts into recipe pages.
     - Verify with Google's Rich Results Test.
 
-## Phase 2: Performance and Optimization
+## Phase 2: Performance and Optimization [checkpoint: 6460260]
 - [x] Task: Asset and Code Optimization (acf4124)
     - Implement image lazy loading and Cloudinary transformations.
     - Audit and optimize bundle size with Vite.
