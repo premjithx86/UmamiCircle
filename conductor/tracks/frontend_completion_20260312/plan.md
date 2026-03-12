@@ -1,14 +1,14 @@
 # Implementation Plan: Frontend Completion - Auth, Feed, Creation, and UX
 
-## Phase 1: Authentication & User State
-- [ ] Task: Firebase Auth Integration Enhancements
+## Phase 1: Authentication & User State [checkpoint: 4b80cdd]
+- [x] Task: Firebase Auth Integration Enhancements (f684e23)
     - Setup Firebase Google Auth provider.
     - Implement "Sign in with Google" on the Login page.
     - Build "Forgot Password" modal and flow.
-- [ ] Task: Signup Page Update
+- [x] Task: Signup Page Update (4a55fee)
     - Add Date of Birth field to the signup form.
     - Update validation and sync logic to include DOB.
-- [ ] Task: User Synchronization & Auth Guard
+- [x] Task: User Synchronization & Auth Guard (28101a2)
     - Call `/api/users/sync` on successful Firebase login/signup (including Google).
     - Implement protected route wrapper (Auth Guard) to redirect to `/login`.
 
