@@ -1,6 +1,6 @@
 # Implementation Plan: Final Polish, SEO, and Optimization
 
-## Phase 1: SEO and Meta Data
+## Phase 1: SEO and Meta Data [checkpoint: bd45319]
 - [x] Task: Dynamic Meta and OG Implementation (c2c8d39)
     - Setup `react-helmet-async` for managing head tags.
     - Implement dynamic meta tags based on post/recipe data.
