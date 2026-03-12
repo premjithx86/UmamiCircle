@@ -122,6 +122,93 @@ router.delete("/users/:id", adminAuth, authorizeRoles("Admin", "SuperAdmin"), as
 });
 
 /**
+ * @route GET /api/admin/content/posts
+ * @desc List and filter posts
+ * @access Private (Admin)
+ */
+router.get("/content/posts", adminAuth, async (req, res) => {
+  try {
+    const { search, status } = req.query;
+    let query = {};
+    
+    if (search) {
+      query.caption = { $regex: search, $options: "i" };
+    }
+    
+    if (status) {
+      query.moderationStatus = status;
+    }
+
+    const posts = await Post.find(query).populate("user", "username email").sort({ createdAt: -1 });
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @route DELETE /api/admin/content/posts/:id
+ * @desc Delete a post
+ * @access Private (Admin)
+ */
+router.delete("/content/posts/:id", adminAuth, async (req, res) => {
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @route GET /api/admin/content/recipes
+ * @desc List and filter recipes
+ * @access Private (Admin)
+ */
+router.get("/content/recipes", adminAuth, async (req, res) => {
+  try {
+    const { search, status } = req.query;
+    let query = {};
+    
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+    
+    if (status) {
+      query.moderationStatus = status;
+    }
+
+    const recipes = await Recipe.find(query).populate("user", "username email").sort({ createdAt: -1 });
+    res.status(200).json(recipes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @route DELETE /api/admin/content/recipes/:id
+ * @desc Delete a recipe
+ * @access Private (Admin)
+ */
+router.delete("/content/recipes/:id", adminAuth, async (req, res) => {
+  try {
+    const recipe = await Recipe.findByIdAndDelete(req.params.id);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+    res.status(200).json({ message: "Recipe deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * @route POST /api/admin/login
  * @desc Authenticate admin and return JWT
  * @access Public

@@ -32,6 +32,11 @@ const PostSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  moderationStatus: {
+    type: String,
+    enum: ["pending", "approved", "flagged"],
+    default: "pending",
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Post", PostSchema);

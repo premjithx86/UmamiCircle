@@ -58,6 +58,11 @@ const RecipeSchema = new mongoose.Schema({
     type: String,
     enum: ["Easy", "Medium", "Hard"],
   },
+  moderationStatus: {
+    type: String,
+    enum: ["pending", "approved", "flagged"],
+    default: "pending",
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Recipe", RecipeSchema);
