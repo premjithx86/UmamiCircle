@@ -18,7 +18,6 @@ const PostSchema = new mongoose.Schema({
   imageHash: {
     type: String,
     required: true,
-    unique: true,
   },
   tags: [{
     type: String,
