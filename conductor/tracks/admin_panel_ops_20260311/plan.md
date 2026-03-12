@@ -3,7 +3,7 @@
 ## Phase 1: Content Moderation Tools
 - [x] Task: Content Management API (5be9c81)
     - Implement endpoints to list, filter, and delete posts/recipes from admin.
-- [ ] Task: Build Content Review UI
+- [x] Task: Build Content Review UI (76d59f1)
     - Design the "Moderation Queue" for human review.
     - Integrate AI moderation scores into the view.
 
