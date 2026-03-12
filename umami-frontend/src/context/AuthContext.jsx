@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '../utils/firebase';
 import api from '../services/api';
+import { initSocket, disconnectSocket } from '../services/socket';
 
 const AuthContext = createContext();
 
@@ -31,6 +32,10 @@ export const AuthProvider = ({ children }) => {
         }
       });
       setUserData(response.data.user);
+      
+      // Initialize real-time connection
+      initSocket(token);
+      
       return response.data.user;
     } catch (error) {
       console.error("Error syncing user:", error);
@@ -45,6 +50,7 @@ export const AuthProvider = ({ children }) => {
         await syncUserWithBackend(user);
       } else {
         setUserData(null);
+        disconnectSocket();
       }
       setLoading(false);
     });
@@ -54,7 +60,6 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password, additionalData) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    // Explicitly sync after signup
     await syncUserWithBackend(userCredential.user, additionalData);
     return userCredential;
   };
@@ -64,12 +69,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    disconnectSocket();
     return signOut(auth);
   };
 
   const loginWithGoogle = async () => {
     const userCredential = await signInWithPopup(auth, googleProvider);
-    // Explicitly sync after google login
     await syncUserWithBackend(userCredential.user);
     return userCredential;
   };

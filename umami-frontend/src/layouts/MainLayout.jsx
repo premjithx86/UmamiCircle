@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import { Search, PlusSquare, Utensils, Settings as SettingsIcon } from 'lucide-react';
 
 const MainLayout = () => {
   const { darkMode, toggleDarkMode } = useTheme();
@@ -26,11 +27,23 @@ const MainLayout = () => {
           <div className="flex items-center space-x-1 md:space-x-4">
             <Link to="/" className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors">Home</Link>
             <Link to="/explore" className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors">Explore</Link>
+            <Link to="/search" className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors flex items-center" aria-label="Search">
+              <Search size={20} />
+            </Link>
             
             {currentUser ? (
               <>
+                <Link to="/create/post" className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors flex items-center" title="Create Post">
+                  <PlusSquare size={20} />
+                </Link>
+                <Link to="/create/recipe" className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors flex items-center" title="Create Recipe">
+                  <Utensils size={20} />
+                </Link>
                 <Link to="/notifications" className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors">Notifications</Link>
                 <Link to="/messages" className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors">Messages</Link>
+                <Link to="/settings" className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors flex items-center" title="Settings">
+                  <SettingsIcon size={20} />
+                </Link>
                 <Link to={`/u/${userData?.username || currentUser.uid}`} className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors">Profile</Link>
                 <button
                   onClick={handleLogout}
