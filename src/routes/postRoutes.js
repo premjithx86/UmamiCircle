@@ -154,6 +154,25 @@ router.get("/search", async (req, res) => {
 });
 
 /**
+ * Get a single post by ID
+ */
+router.get("/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate("user", "username profilePicUrl name");
+    
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error fetching post:", error.message);
+    res.status(500).json({ error: "Failed to fetch post" });
+  }
+});
+
+/**
  * Toggle like/unlike on a post
  */
 router.post("/like/:id", authMiddleware, async (req, res) => {
