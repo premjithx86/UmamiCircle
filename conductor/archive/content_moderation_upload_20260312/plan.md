@@ -2,9 +2,9 @@
 
 ## Phase 1: Backend Moderation API Enhancements
 - [x] Task: Update `moderationService.js` for Real API Integration (623bb86)
-    - Replace mocks with real fetch/SDK calls for Sightengine and Google Vision.
-    - Implement Google Vision food detection using `GOOGLE_VISION_KEY` (REST API).
-    - Ensure Cloudinary, Sightengine, Google Vision, and Groq keys are used from `process.env`.
+    - Replace mocks with real fetch/SDK calls for Sightengine and Hugging Face.
+    - Implement Hugging Face food detection using `HUGGINGFACE_API_KEY` (REST API).
+    - Ensure Cloudinary, Sightengine, Hugging Face, and Groq keys are used from `process.env`.
     - **Fix:** Corrected Sightengine call to use `multipart/form-data` with `axios` and `form-data` package.
 - [x] Task: Create `uploadRoutes.js` (acf4124)
     - Implement `POST /api/upload` endpoint.

@@ -46,10 +46,11 @@ const processImageModeration = async (req, res, next) => {
       return res.status(400).json({ error: "Image failed safety check (NSFW detected)" });
     }
 
-    // 3. Food Content Check (Google Cloud Vision)
-    const foodCheck = await verifyFoodContent(req.file.buffer);
-    if (!foodCheck.isFood) {
-      return res.status(400).json({ error: "Image does not appear to contain food" });
+    // 3. Food Content Check (Hugging Face)
+    try {
+      await verifyFoodContent(req.file.buffer);
+    } catch (foodError) {
+      return res.status(400).json({ error: foodError.message });
     }
 
     // 4. Upload to Cloudinary

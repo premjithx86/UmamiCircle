@@ -15,8 +15,6 @@ const groq = process.env.GROQ_API_KEY
   ? new Groq({ apiKey: process.env.GROQ_API_KEY })
   : null;
 
-const GOOGLE_VISION_KEY = process.env.GOOGLE_VISION_KEY;
-
 /**
  * Generates an MD5 hash of a buffer.
  * Used for image deduplication.
@@ -73,56 +71,32 @@ const checkImageSafety = async (imageBuffer) => {
 };
 
 /**
- * Verifies if image contains food using Google Cloud Vision REST API.
+ * Verifies if image contains food using Hugging Face food detection model.
  */
-const verifyFoodContent = async (imageBuffer) => {
+async function verifyFoodContent(imageBuffer) {
   if (process.env.NODE_ENV === "test") {
-    return { isFood: true };
+    return true;
   }
 
-  if (!GOOGLE_VISION_KEY) {
-    console.warn("GOOGLE_VISION_KEY not configured. Skipping food verification.");
-    return { isFood: true };
-  }
-
-  try {
-    const base64Image = imageBuffer.toString('base64');
-    const response = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_VISION_KEY}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        requests: [
-          {
-            image: { content: base64Image },
-            features: [{ type: 'LABEL_DETECTION', maxResults: 10 }]
-          }
-        ]
-      }),
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(data.error.message);
+  const response = await fetch(
+    "https://api-inference.huggingface.co/models/nateraw/food",
+    {
+      headers: { 
+        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        "Content-Type": "application/octet-stream"
+      },
+      method: "POST",
+      body: imageBuffer,
     }
-
-    const labels = data.responses[0].labelAnnotations || [];
-    
-    // Check if any label is related to food
-    const foodKeywords = ['Food', 'Cuisine', 'Dish', 'Ingredient', 'Produce', 'Meal', 'Recipe', 'Vegetable', 'Fruit', 'Meat', 'Dessert', 'Baking'];
-    const isFood = labels.some(label => 
-      foodKeywords.some(keyword => label.description.includes(keyword)) && label.score > 0.6
-    );
-
-    return { 
-      isFood, 
-      labels: labels.map(l => l.description) 
-    };
-  } catch (error) {
-    console.error("Google Vision error:", error.message);
-    throw error;
+  );
+  const result = await response.json();
+  
+  // If result is an array with at least one classification, it's food
+  if (Array.isArray(result) && result.length > 0 && result[0].score > 0.1) {
+    return true; // food detected
   }
-};
+  throw new Error("Please upload food-related content.");
+}
 
 /**
  * Uploads image to Cloudinary.

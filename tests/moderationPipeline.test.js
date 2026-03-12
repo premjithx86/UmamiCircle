@@ -48,7 +48,7 @@ describe("Moderation Pipeline & Upload API", () => {
 
     // Default mock behaviors
     moderationService.checkImageSafety.mockResolvedValue({ safe: true });
-    moderationService.verifyFoodContent.mockResolvedValue({ isFood: true });
+    moderationService.verifyFoodContent.mockResolvedValue(true);
     moderationService.uploadToCloudinary.mockResolvedValue({ secure_url: "http://cloudinary.com/test.jpg" });
     moderationService.validateFoodRelevance.mockResolvedValue({ relevant: true });
   });
@@ -79,7 +79,7 @@ describe("Moderation Pipeline & Upload API", () => {
     });
 
     it("should reject non-food images", async () => {
-      moderationService.verifyFoodContent.mockResolvedValue({ isFood: false });
+      moderationService.verifyFoodContent.mockRejectedValue(new Error("Please upload food-related content."));
 
       const res = await request(app)
         .post("/api/upload")
@@ -87,7 +87,7 @@ describe("Moderation Pipeline & Upload API", () => {
         .attach("image", Buffer.from("cat-data"), "cat.jpg");
 
       expect(res.status).toBe(400);
-      expect(res.body.error).toMatch(/contain food/i);
+      expect(res.body.error).toBe("Please upload food-related content.");
     });
   });
 
