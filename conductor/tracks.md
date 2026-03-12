@@ -41,3 +41,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] ~~**Track: Final Polish: SEO, Optimization, and Project Handover**~~ (Archived)
   *Link: [./archive/final_polish_seo_20260311/](./archive/final_polish_seo_20260311/)*
+
+---
+
+- [ ] **Track: Frontend Completion: Auth, Feed, Creation, and Dark Mode**
+  *Link: [./tracks/frontend_completion_20260312/](./tracks/frontend_completion_20260312/)*
