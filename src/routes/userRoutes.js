@@ -3,28 +3,44 @@ const User = require("../models/User");
 const { authMiddleware, stripRole } = require("../middleware/auth");
 const router = express.Router();
 
-// Sync user from Firebase with MongoDB
+// Sync user from Firebase with MongoDB using upsert
 router.post("/sync", authMiddleware, async (req, res) => {
   try {
-    const { username, name, email } = req.body;
-    // req.user is set by authMiddleware
+    const { username, name, email, dob } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    // req.user is set by authMiddleware from the verified token
     const firebaseUID = req.user.uid;
     
-    let user = await User.findOne({ firebaseUID });
+    // Use findOneAndUpdate with upsert: true to create or update
+    // We use $setOnInsert for fields that should only be set during creation
+    const user = await User.findOneAndUpdate(
+      { firebaseUID },
+      { 
+        $set: { email, dob },
+        $setOnInsert: { 
+          firebaseUID,
+          username: username || email.split('@')[0], 
+          name: name || email.split('@')[0]
+        } 
+      },
+      { 
+        upsert: true, 
+        returnDocument: 'after', 
+        runValidators: true,
+        setDefaultsOnInsert: true
+      }
+    );
     
-    if (!user) {
-      user = new User({
-        firebaseUID,
-        username,
-        name,
-        email
-      });
-      await user.save();
-      return res.status(201).json({ message: "User created", user });
-    }
-    
-    res.status(200).json({ message: "User found", user });
+    res.status(200).json({ message: "User synced", user });
   } catch (error) {
+    console.error("Sync error:", error.message);
+    if (error.code === 11000) {
+      return res.status(409).json({ error: "Username or email already exists" });
+    }
     res.status(500).json({ error: error.message });
   }
 });

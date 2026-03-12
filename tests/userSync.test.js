@@ -28,14 +28,17 @@ describe("POST /api/users/sync", () => {
       .send({
         username: "newuser",
         name: "New User",
-        email: "new@example.com"
+        email: "new@example.com",
+        dob: "1990-01-01"
       });
       
-    expect(res.statusCode).toEqual(201);
+    expect(res.statusCode).toEqual(200);
     expect(res.body.user.username).toBe("newuser");
+    expect(res.body.user.dob).toBeDefined();
     
     const userInDb = await User.findOne({ username: "newuser" });
     expect(userInDb).not.toBeNull();
+    expect(userInDb.dob.toISOString().split('T')[0]).toBe("1990-01-01");
   });
 
   it("should strip role from profile update", async () => {

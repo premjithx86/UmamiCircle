@@ -1,17 +1,31 @@
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  // In a real app, verify with firebaseAdmin.auth().verifyIdToken(token)
-  // For testing, we extract the uid from "Bearer <uid>"
-  const uid = token.split(" ")[1] || "mock-uid-123";
+const admin = require("../config/firebase");
+
+const authMiddleware = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
   
-  req.user = {
-    uid: uid,
-    email: "mock@example.com"
-  };
-  next();
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    // If we're in a testing environment and the token is 'mock-token', bypass verification
+    if (process.env.NODE_ENV === 'test' && token === 'mock-token') {
+      req.user = {
+        uid: "mock-uid-123",
+        email: "mock@example.com"
+      };
+      return next();
+    }
+
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    console.error("Firebase auth error:", error.message);
+    res.status(401).json({ error: "Invalid token" });
+  }
 };
 
 const stripRole = (req, res, next) => {
