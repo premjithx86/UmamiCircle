@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { ProfileHeader } from '../components/ProfileHeader';
 import { ProfileTabs } from '../components/ProfileTabs';
 import { ContentGrid } from '../components/ContentGrid';
@@ -66,6 +67,12 @@ const Profile = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
+      <SEO 
+        title={`${user.name} (@${user.username})`}
+        description={user.bio}
+        image={user.avatar}
+        type="profile"
+      />
       <ProfileHeader
         user={user}
         isOwnProfile={username === 'testuser'} // Mock own profile check

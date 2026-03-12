@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
 import { TagList } from '../components/TagList';
@@ -56,6 +57,12 @@ export const PostDetail = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500" data-testid="post-detail">
+      <SEO 
+        title={`Post by ${post.user.username}`}
+        description={post.caption}
+        image={post.imageUrl}
+        type="article"
+      />
       <Card className="overflow-hidden">
         <div className="flex flex-col md:flex-row h-full md:max-h-[700px]">
           {/* Image Section */}

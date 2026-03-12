@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
 import { TagList } from '../components/TagList';
@@ -69,6 +70,12 @@ export const RecipeDetail = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500" data-testid="recipe-detail">
+      <SEO 
+        title={recipe.title}
+        description={recipe.description}
+        image={recipe.imageUrl}
+        type="article"
+      />
       {/* Hero Section */}
       <div className="relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-lg">
         <img
