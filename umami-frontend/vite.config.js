@@ -56,6 +56,6 @@ export default defineConfig({
     setupFiles: './src/test/setup.js',
   },
 server: {
-  port: 5174
+  port: 5173
 },
 })
