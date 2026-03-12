@@ -16,7 +16,7 @@ router.post("/sync", authMiddleware, async (req, res) => {
     const firebaseUID = req.user.uid;
     
     // Use findOneAndUpdate with upsert: true to create or update
-    // We use $setOnInsert for fields that should only be set during creation
+    // If the user already exists, it will simply update and return the document
     const user = await User.findOneAndUpdate(
       { firebaseUID },
       { 
@@ -38,9 +38,6 @@ router.post("/sync", authMiddleware, async (req, res) => {
     res.status(200).json({ message: "User synced", user });
   } catch (error) {
     console.error("Sync error:", error.message);
-    if (error.code === 11000) {
-      return res.status(409).json({ error: "Username or email already exists" });
-    }
     res.status(500).json({ error: error.message });
   }
 });
