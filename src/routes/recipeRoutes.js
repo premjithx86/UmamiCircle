@@ -7,8 +7,10 @@ const { moderateText } = require("../middleware/textModerationMiddleware");
 const { authMiddleware } = require("../middleware/auth");
 const { createNotification } = require("../services/notificationService");
 
-// Create a new recipe
-router.post("/", authMiddleware, upload.single("image"), moderateText, processImageModeration, async (req, res) => {
+/**
+ * Helper to handle recipe creation logic
+ */
+const createRecipeLogic = async (req, res) => {
   try {
     // If it's a duplicate, return the existing image URL and info
     if (req.isDuplicate) {
@@ -19,8 +21,16 @@ router.post("/", authMiddleware, upload.single("image"), moderateText, processIm
       });
     }
 
-    const { title, description, ingredients, steps, tags, prepTime, cookTime, servings, difficulty } = req.body;
+    let { title, description, ingredients, steps, tags, prepTime, cookTime, servings, difficulty, imageUrl, imageHash } = req.body;
     
+    imageUrl = req.imageUrl || imageUrl;
+    imageHash = req.imageHash || imageHash;
+    description = req.censoredText || description;
+
+    if (!imageUrl || !imageHash) {
+      return res.status(400).json({ error: "Image URL and Hash are required" });
+    }
+
     // Fetch the correct User ObjectId from MongoDB using req.user (from authMiddleware)
     const userDoc = await User.findOne({ firebaseUID: req.user.uid });
     if (!userDoc) {
@@ -30,12 +40,12 @@ router.post("/", authMiddleware, upload.single("image"), moderateText, processIm
     const newRecipe = new Recipe({
       user: userDoc._id,
       title,
-      description: req.censoredText || description,
-      ingredients: ingredients ? JSON.parse(ingredients) : [],
-      steps: steps ? JSON.parse(steps) : [],
-      imageUrl: req.imageUrl,
-      imageHash: req.imageHash,
-      tags: tags ? JSON.parse(tags) : [],
+      description: description,
+      ingredients: ingredients ? (typeof ingredients === 'string' ? JSON.parse(ingredients) : ingredients) : [],
+      steps: steps ? (typeof steps === 'string' ? JSON.parse(steps) : steps) : [],
+      imageUrl: imageUrl,
+      imageHash: imageHash,
+      tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : [],
       prepTime,
       cookTime,
       servings,
@@ -48,6 +58,22 @@ router.post("/", authMiddleware, upload.single("image"), moderateText, processIm
     console.error("Error creating recipe:", error);
     res.status(500).json({ error: "Failed to create recipe" });
   }
+};
+
+// Unified route for creation
+router.post("/", authMiddleware, (req, res, next) => {
+  if (req.headers['content-type']?.includes('multipart/form-data')) {
+    return upload.single("image")(req, res, () => {
+      moderateText(req, res, () => {
+        processImageModeration(req, res, () => {
+          createRecipeLogic(req, res);
+        });
+      });
+    });
+  }
+  moderateText(req, res, () => {
+    createRecipeLogic(req, res);
+  });
 });
 
 /**
@@ -71,11 +97,9 @@ router.post("/like/:id", authMiddleware, async (req, res) => {
     const likeIndex = recipe.likes.indexOf(userDoc._id);
 
     if (likeIndex === -1) {
-      // Like the recipe
       recipe.likes.push(userDoc._id);
       await recipe.save();
 
-      // Trigger Notification
       await createNotification({
         user: recipe.user,
         actor: userDoc._id,
@@ -86,7 +110,6 @@ router.post("/like/:id", authMiddleware, async (req, res) => {
 
       return res.status(200).json({ message: "Recipe liked successfully", likes: recipe.likes.length });
     } else {
-      // Unlike the recipe
       recipe.likes.splice(likeIndex, 1);
       await recipe.save();
       return res.status(200).json({ message: "Recipe unliked successfully", likes: recipe.likes.length });

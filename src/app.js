@@ -44,6 +44,7 @@ const commentRoutes = require("./routes/commentRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const messagingRoutes = require("./routes/messagingRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
@@ -53,6 +54,7 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/messages", messagingRoutes.messagingRouter);
 app.use("/api/admin", adminRoutes);
+app.use("/api/upload", uploadRoutes);
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok" });
