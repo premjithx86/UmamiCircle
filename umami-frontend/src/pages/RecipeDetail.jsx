@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
+import { RecipeJSONLD } from '../components/RecipeJSONLD';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Card } from '../components/Card';
 import { TagList } from '../components/TagList';
@@ -76,6 +77,7 @@ export const RecipeDetail = () => {
         image={recipe.imageUrl}
         type="article"
       />
+      <RecipeJSONLD recipe={recipe} />
       {/* Hero Section */}
       <div className="relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-lg">
         <img
