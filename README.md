@@ -128,8 +128,6 @@ UmamiCircle/
 
 ## 📸 Screenshots
 
-## 📸 Screenshots
-
 ### Home Feed
 ![Home Feed](screenshots/home.png)
 
