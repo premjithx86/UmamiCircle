@@ -8,7 +8,7 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, loginWithGoogle, resetPassword } = useAuth();
+  const { login, loginWithGoogle, resetPassword, logout, syncUserWithBackend } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -16,10 +16,27 @@ export const Login = () => {
     try {
       setError('');
       setLoading(true);
-      await login(email, password);
-      navigate('/');
+      const userCredential = await login(email, password);
+      
+      // Explicitly sync and catch block error
+      try {
+        await syncUserWithBackend(userCredential.user);
+        navigate('/');
+      } catch (syncErr) {
+        if (syncErr.response?.status === 401 && syncErr.response?.data?.error?.includes('blocked')) {
+          await logout();
+          setError('Your account has been blocked by an admin. Please contact support.');
+        } else {
+          throw syncErr;
+        }
+      }
     } catch (err) {
-      setError('Failed to log in: ' + err.message);
+      const message = err.response?.data?.error || err.message;
+      if (message.includes('blocked by an admin')) {
+        setError('Your account has been blocked by an admin. Please contact support.');
+      } else {
+        setError('Failed to log in: ' + message);
+      }
     }
     setLoading(false);
   }
@@ -31,7 +48,13 @@ export const Login = () => {
       await loginWithGoogle();
       navigate('/');
     } catch (err) {
-      setError('Failed to sign in with Google: ' + err.message);
+      const message = err.response?.data?.error || err.message;
+      if (message.includes('blocked by an admin') || err.response?.status === 401) {
+        await logout();
+        setError('Your account has been blocked by an admin. Please contact support.');
+      } else {
+        setError('Failed to sign in with Google: ' + message);
+      }
     }
     setLoading(false);
   }

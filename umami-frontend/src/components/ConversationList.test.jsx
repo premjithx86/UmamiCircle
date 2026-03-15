@@ -64,11 +64,11 @@ describe('ConversationList Component', () => {
     );
 
     const activeItem = screen.getByText('user2').closest('button');
-    expect(activeItem).toHaveClass('bg-orange-50'); // Assuming this is the active style
+    expect(activeItem).toHaveClass('bg-primary/10'); // New active style
   });
 
   it('renders empty message when no conversations', () => {
     render(<ConversationList conversations={[]} onSelectConversation={() => {}} />);
-    expect(screen.getByText(/No conversations yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/No chats yet/i)).toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ProfileTabs } from './ProfileTabs';
 
@@ -20,15 +20,23 @@ describe('ProfileTabs Component', () => {
   it('highlights the active tab', () => {
     render(<ProfileTabs tabs={mockTabs} activeTab="recipes" onTabChange={() => {}} />);
     
-    const recipesTab = screen.getByText(/Recipes/i).closest('button');
-    expect(recipesTab).toHaveClass('border-primary'); // Assuming active style
+    const recipesTab = screen.getByTestId('tab-recipes');
+    expect(recipesTab).toHaveAttribute('data-state', 'active');
   });
 
-  it('calls onTabChange when a tab is clicked', () => {
+  it('calls onTabChange when a tab is clicked', async () => {
     const onTabChange = vi.fn();
     render(<ProfileTabs tabs={mockTabs} activeTab="posts" onTabChange={onTabChange} />);
     
-    fireEvent.click(screen.getByText(/Recipes/i));
-    expect(onTabChange).toHaveBeenCalledWith('recipes');
+    const recipesTab = screen.getByTestId('tab-recipes');
+    
+    // Try multiple ways to activate the Radix Tab
+    fireEvent.click(recipesTab);
+    fireEvent.keyDown(recipesTab, { key: ' ', code: 'Space' });
+    fireEvent.keyDown(recipesTab, { key: 'Enter', code: 'Enter' });
+    
+    await waitFor(() => {
+      expect(onTabChange).toHaveBeenCalledWith('recipes');
+    }, { timeout: 2000 });
   });
 });

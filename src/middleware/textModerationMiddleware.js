@@ -14,6 +14,7 @@ const matcher = new RegExpMatcher({
  * Middleware for text moderation, including main content and tags.
  */
 const moderateText = async (req, res, next) => {
+  console.log("moderateText middleware hit for path:", req.path, "body:", req.body);
   const { caption, description, title, tags } = req.body;
   const mainText = caption || description || title;
 

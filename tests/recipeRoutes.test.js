@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const Recipe = require("../src/models/Recipe");
 const User = require("../src/models/User");
+const ModerationCache = require("../src/models/ModerationCache");
 
 let mongoServer;
 
@@ -23,6 +24,7 @@ describe("Recipe Routes Integration Test", () => {
   beforeEach(async () => {
     await Recipe.deleteMany({});
     await User.deleteMany({});
+    await ModerationCache.deleteMany({});
     
     // Create a user that matches the mock authMiddleware (uid: "mock-uid-123")
     testUser = new User({
@@ -93,5 +95,52 @@ describe("Recipe Routes Integration Test", () => {
     // Verify in DB
     const recipeAfterUnlike = await Recipe.findById(recipeId);
     expect(recipeAfterUnlike.likes).not.toContainEqual(testUser._id);
+  });
+
+  it("should update own recipe description and tags", async () => {
+    // 1. Create recipe
+    const recipeRes = await request(app)
+      .post("/api/recipes")
+      .set("Authorization", "Bearer mock-uid-123")
+      .field("title", "Original Title")
+      .field("description", "Original description")
+      .attach("image", Buffer.from("data"), "recipe.jpg");
+    
+    const recipeId = recipeRes.body._id;
+
+    // 2. Update recipe
+    const updateRes = await request(app)
+      .put(`/api/recipes/${recipeId}`)
+      .set("Authorization", "Bearer mock-uid-123")
+      .send({
+        description: "Updated description",
+        tags: ["updated", "recipe"]
+      });
+
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.description).toBe("Updated description");
+    expect(updateRes.body.tags).toContain("updated");
+  });
+
+  it("should delete own recipe", async () => {
+    // 1. Create recipe
+    const recipeRes = await request(app)
+      .post("/api/recipes")
+      .set("Authorization", "Bearer mock-uid-123")
+      .field("title", "To be deleted")
+      .attach("image", Buffer.from("data"), "recipe.jpg");
+    
+    const recipeId = recipeRes.body._id;
+
+    // 2. Delete recipe
+    const deleteRes = await request(app)
+      .delete(`/api/recipes/${recipeId}`)
+      .set("Authorization", "Bearer mock-uid-123");
+
+    expect(deleteRes.status).toBe(200);
+    
+    // Verify in DB
+    const deletedRecipe = await Recipe.findById(recipeId);
+    expect(deletedRecipe).toBeNull();
   });
 });

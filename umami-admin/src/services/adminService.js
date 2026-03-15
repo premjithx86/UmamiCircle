@@ -56,7 +56,7 @@ export const getPosts = async (params = {}) => {
 
 export const deletePost = async (postId) => {
   const token = localStorage.getItem('adminToken');
-  const response = await axios.delete(`${API_URL}/content/posts/${postId}`, {
+  const response = await axios.delete(`${API_URL}/content/post/${postId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -77,7 +77,37 @@ export const getRecipes = async (params = {}) => {
 
 export const deleteRecipe = async (recipeId) => {
   const token = localStorage.getItem('adminToken');
-  const response = await axios.delete(`${API_URL}/content/recipes/${recipeId}`, {
+  const response = await axios.delete(`${API_URL}/content/recipe/${recipeId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const updateContentStatus = async (type, id, status) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.patch(`${API_URL}/content/${type}/${id}/status`, { status }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const toggleHideContent = async (type, id, isHidden) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.patch(`${API_URL}/content/${type}/${id}/hide`, { isHidden }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const updateContentDetails = async (type, id, updates) => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.put(`${API_URL}/content/${type}/${id}`, updates, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -99,6 +129,16 @@ export const getReports = async (params = {}) => {
 export const updateReport = async (reportId, data) => {
   const token = localStorage.getItem('adminToken');
   const response = await axios.patch(`${API_URL}/reports/${reportId}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const takeReportAction = async (reportId, action, warnMessage = '') => {
+  const token = localStorage.getItem('adminToken');
+  const response = await axios.post(`${API_URL}/reports/${reportId}/action`, { action, warnMessage }, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

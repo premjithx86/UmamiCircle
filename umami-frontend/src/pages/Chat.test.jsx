@@ -1,21 +1,27 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen } from '../test/test-utils';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Chat } from './Chat';
+import api from '../services/api';
+
+// Mock useAuth
+vi.mock('../context/AuthContext', () => ({
+  useAuth: () => ({
+    userData: { _id: 'u1', username: 'testuser' },
+  }),
+  AuthProvider: ({ children }) => <div>{children}</div>,
+}));
 
 describe('Chat Page', () => {
-  it('renders both conversation list and chat window', () => {
-    // Mock window width to be large enough to show ChatWindow
-    global.innerWidth = 1024;
-    global.dispatchEvent(new Event('resize'));
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    render(
-      <MemoryRouter>
-        <Chat />
-      </MemoryRouter>
-    );
+  it('renders both conversation list and chat window', async () => {
+    api.get.mockResolvedValue({ data: [] });
 
-    expect(screen.getByTestId('conversation-list')).toBeInTheDocument();
-    expect(screen.getByTestId('chat-window')).toBeInTheDocument();
+    render(<Chat />);
+    
+    expect(screen.getByRole('heading', { name: /Messages/i })).toBeInTheDocument();
+    expect(await screen.findByText(/Your Kitchen Chat/i)).toBeInTheDocument();
   });
 });

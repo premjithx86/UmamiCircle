@@ -64,7 +64,7 @@ router.get("/:type/:id", async (req, res) => {
   try {
     const { type, id } = req.params;
     const comments = await Comment.find({ targetType: type, targetId: id })
-      .populate("user", "username avatar")
+      .populate("user", "username name profilePicUrl")
       .sort({ createdAt: -1 });
     
     res.status(200).json(comments);

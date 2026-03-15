@@ -9,20 +9,23 @@ const NotificationSchema = new mongoose.Schema({
   actor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    required: false, // Optional for system notifications
   },
   type: {
     type: String,
-    enum: ["like", "comment", "follow", "mention", "report_update"],
+    enum: ["like", "comment", "follow", "mention", "report_update", "message", "system"],
     required: true,
   },
   targetType: {
     type: String,
-    enum: ["Post", "Recipe", "User", "Comment"],
+    enum: ["Post", "Recipe", "User", "Comment", "Conversation"],
   },
   targetId: {
     type: mongoose.Schema.Types.ObjectId,
     refPath: "targetType",
+  },
+  content: {
+    type: String, // For custom system messages
   },
   isRead: {
     type: Boolean,

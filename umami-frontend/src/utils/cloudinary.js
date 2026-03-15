@@ -1,25 +1,32 @@
 /**
- * Cloudinary URL transformation helper.
- * Inserts optimization parameters into a Cloudinary URL.
+ * Helper to insert Cloudinary transformation parameters into a Cloudinary URL.
  * 
- * @param {string} url - The original Cloudinary URL
- * @param {Object} options - Transformation options
- * @param {number} [options.width] - Image width
- * @param {number} [options.height] - Image height
- * @param {string} [options.crop='fill'] - Crop mode
- * @returns {string} The optimized URL
+ * @param {string} url - The original Cloudinary URL.
+ * @param {number} width - Target width.
+ * @param {number} height - Target height.
+ * @param {string} crop - Transformation crop mode (default: 'fill').
+ * @returns {string} - The transformed URL.
  */
-export const getOptimizedUrl = (url, { width, height, crop = 'fill' } = {}) => {
-  if (!url || !url.includes('cloudinary.com')) return url;
+export const getCloudinaryUrl = (url, width, height, crop = 'fill') => {
+  if (!url || typeof url !== 'string') return url;
+  
+  // Only transform Cloudinary URLs
+  if (!url.includes('cloudinary.com')) return url;
 
-  // Transformations to insert
-  let transformations = ['q_auto', 'f_auto'];
-  if (width) transformations.push(`w_${width}`);
-  if (height) transformations.push(`h_${height}`);
-  if (width || height) transformations.push(`c_${crop}`);
+  // If width and height are not provided, return original URL unchanged
+  if (!width && !height) return url;
 
-  const transformString = transformations.join(',');
+  const parts = url.split('/upload/');
+  if (parts.length !== 2) return url;
 
-  // Insert transformations after /upload/
-  return url.replace('/upload/', `/upload/${transformString}/`);
+  let transformation = '';
+  if (width && height) {
+    transformation = `w_${width},h_${height},c_${crop},q_auto,f_auto`;
+  } else if (width) {
+    transformation = `w_${width},q_auto,f_auto`;
+  } else if (height) {
+    transformation = `h_${height},q_auto,f_auto`;
+  }
+
+  return transformation ? `${parts[0]}/upload/${transformation}/${parts[1]}` : url;
 };

@@ -4,12 +4,15 @@ import { EngagementBar } from './EngagementBar';
 
 describe('EngagementBar Component', () => {
   it('renders all interaction buttons', () => {
-    render(<EngagementBar />);
+    render(<EngagementBar likesCount={5} commentsCount={3} />);
     
     expect(screen.getByRole('button', { name: /like/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /comment/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /share/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /bookmark/i })).toBeInTheDocument();
+    
+    expect(screen.getByText('5 likes')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument(); // comments count
   });
 
   it('calls onLikeToggle when like button is clicked', () => {

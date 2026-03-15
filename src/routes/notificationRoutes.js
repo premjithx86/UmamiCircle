@@ -14,7 +14,7 @@ router.get("/", authMiddleware, async (req, res) => {
     if (!userDoc) return res.status(404).json({ error: "User not found" });
 
     const notifications = await Notification.find({ user: userDoc._id })
-      .populate("actor", "username avatar")
+      .populate("actor", "username name profilePicUrl")
       .sort({ createdAt: -1 });
 
     res.status(200).json(notifications);

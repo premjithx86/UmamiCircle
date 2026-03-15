@@ -25,12 +25,13 @@ const initSocket = (ioInstance) => {
 
 /**
  * Create and emit a notification
- * @param {object} data - Notification data (user, actor, type, targetType, targetId)
+ * @param {object} data - Notification data (user, actor, type, targetType, targetId, content)
  */
-const createNotification = async ({ user, actor, type, targetType, targetId }) => {
+const createNotification = async ({ user, actor, type, targetType, targetId, content }) => {
   try {
     // Don't notify if user is the same as actor (e.g., liking own post)
-    if (user.toString() === actor.toString()) return null;
+    // actor can be null for system notifications
+    if (actor && user.toString() === actor.toString()) return null;
 
     const notification = new Notification({
       user,
@@ -38,13 +39,14 @@ const createNotification = async ({ user, actor, type, targetType, targetId }) =
       type,
       targetType,
       targetId,
+      content,
     });
 
     await notification.save();
 
     // Populate actor info for the frontend
     const populatedNotification = await Notification.findById(notification._id)
-      .populate("actor", "username avatar");
+      .populate("actor", "username profilePicUrl name");
 
     // Emit to the specific user's room
     if (io) {

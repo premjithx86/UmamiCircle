@@ -27,6 +27,10 @@ const PostSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   }],
+  bookmarks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
   commentsCount: {
     type: Number,
     default: 0,
@@ -35,6 +39,10 @@ const PostSchema = new mongoose.Schema({
     type: String,
     enum: ["pending", "approved", "flagged"],
     default: "pending",
+  },
+  isHidden: {
+    type: Boolean,
+    default: false,
   },
 }, { timestamps: true });
 

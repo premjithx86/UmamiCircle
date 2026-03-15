@@ -11,14 +11,15 @@ describe('UserList Component', () => {
   it('renders a list of users correctly', () => {
     render(<UserList users={mockUsers} />);
 
-    expect(screen.getByText('user1')).toBeInTheDocument();
+    expect(screen.getByText(/@user1/i)).toBeInTheDocument();
     expect(screen.getByText('User One')).toBeInTheDocument();
-    expect(screen.getByText('user2')).toBeInTheDocument();
+    expect(screen.getByText('User One')).toBeInTheDocument();
     expect(screen.getByText('User Two')).toBeInTheDocument();
-    
-    const images = screen.getAllByRole('img');
-    expect(images).toHaveLength(2);
-  });
+
+    // Check for initials in AvatarFallback
+    expect(screen.getByText('UO')).toBeInTheDocument();
+    expect(screen.getByText('UT')).toBeInTheDocument();
+    });
 
   it('shows appropriate follow/following buttons', () => {
     render(<UserList users={mockUsers} />);

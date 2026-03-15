@@ -1,9 +1,9 @@
 import React from 'react';
-import { getOptimizedUrl } from '../utils/cloudinary';
 
 /**
- * Image component with automatic Cloudinary optimization and lazy loading.
- * 
+ * Image component for posts and recipes.
+ * Uses the original Cloudinary URL without transformations as per requirements.
+ *
  * @param {Object} props
  * @param {string} props.src - Image source URL
  * @param {string} props.alt - Alt text
@@ -12,20 +12,18 @@ import { getOptimizedUrl } from '../utils/cloudinary';
  * @param {boolean} [props.lazy=true] - Enable lazy loading
  * @param {string} [props.className] - CSS classes
  */
-export const OptimizedImage = ({ 
-  src, 
-  alt, 
-  width, 
-  height, 
-  lazy = true, 
+export const OptimizedImage = ({
+  src,
+  alt,
+  width,
+  height,
+  lazy = true,
   className = '',
-  ...props 
+  ...props
 }) => {
-  const optimizedSrc = getOptimizedUrl(src, { width, height });
-
   return (
     <img
-      src={optimizedSrc}
+      src={src}
       alt={alt}
       width={width}
       height={height}

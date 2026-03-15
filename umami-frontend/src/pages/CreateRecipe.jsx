@@ -5,7 +5,7 @@ import api from '../services/api';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Input } from '../components/Input';
-import { X, Upload, Plus, Minus, AlertCircle, Clock, Users, Flame, Loader2 } from 'lucide-react';
+import { X, Upload, Plus, Minus, AlertCircle, Clock, Users, Flame, Loader2, Sparkles } from 'lucide-react';
 
 const CreateRecipe = () => {
   const [image, setImage] = useState(null);
@@ -21,7 +21,8 @@ const CreateRecipe = () => {
   });
   const [ingredients, setIngredients] = useState(['']);
   const [steps, setSteps] = useState(['']);
-  const [status, setStatus] = useState('idle'); // 'idle', 'moderating', 'publishing'
+  const [status, setStatus] = useState('idle'); // 'idle', 'generating', 'moderating', 'publishing'
+  const [isAiGenerated, setIsAiGenerated] = useState(false);
   const [error, setError] = useState(null);
   
   const fileInputRef = useRef(null);
@@ -57,6 +58,37 @@ const CreateRecipe = () => {
     const newSteps = [...steps];
     newSteps[index] = value;
     setSteps(newSteps);
+  };
+
+  const handleAiAssist = async () => {
+    if (!formData.title.trim()) {
+      return setError('Please enter a dish name first.');
+    }
+
+    try {
+      setStatus('generating');
+      setError(null);
+      console.log('Calling AI suggest with dishName:', formData.title);
+      const response = await api.post('/recipes/ai-suggest', { dishName: formData.title });
+      const suggestion = response.data;
+
+      setFormData(prev => ({
+        ...prev,
+        description: suggestion.description,
+        prepTime: `${suggestion.prepTime} mins`,
+        cookTime: `${suggestion.cookingTime} mins`,
+        difficulty: suggestion.difficulty,
+        tags: suggestion.tags.join(', ')
+      }));
+      setIngredients(suggestion.ingredients);
+      setSteps(suggestion.steps);
+      setIsAiGenerated(true);
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.error || 'AI suggestion unavailable, please fill manually');
+    } finally {
+      setStatus('idle');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -109,7 +141,14 @@ const CreateRecipe = () => {
       <SEO title="Create Recipe" description="Share your signature recipe with the world." />
       
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">New Recipe</h1>
+        <div className="flex items-center space-x-3">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">New Recipe</h1>
+          {isAiGenerated && (
+            <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-bold rounded flex items-center">
+              <Sparkles size={10} className="mr-1" /> AI Generated
+            </span>
+          )}
+        </div>
         <button 
           onClick={() => navigate(-1)} 
           className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -136,7 +175,7 @@ const CreateRecipe = () => {
                       <X size={20} />
                     </button>
                   )}
-                  {status !== 'idle' && (
+                  {(status === 'moderating' || status === 'publishing') && (
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center text-white text-center p-6">
                       <Loader2 className="w-10 h-10 animate-spin mb-4 text-orange-500" />
                       <p className="text-lg font-bold mb-1">
@@ -169,18 +208,44 @@ const CreateRecipe = () => {
                 accept="image/*" 
                 className="hidden" 
                 disabled={status !== 'idle'}
+                data-testid="file-input"
               />
             </Card>
 
-            <Input 
-              label="Title" 
-              name="title" 
-              required 
-              value={formData.title} 
-              onChange={handleInputChange} 
-              placeholder="e.g. Grandma's Famous Lasagna"
-              disabled={status !== 'idle'}
-            />
+            <div className="flex items-end space-x-2">
+              <div className="flex-1">
+                <Input 
+                  label="Title" 
+                  name="title" 
+                  required 
+                  value={formData.title} 
+                  onChange={handleInputChange} 
+                  placeholder="e.g. Grandma's Famous Lasagna"
+                  disabled={status !== 'idle'}
+                />
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleAiAssist}
+                disabled={status !== 'idle' || !formData.title.trim()}
+                className="mb-1 rounded-xl h-[42px]"
+              >
+                {status === 'generating' ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <Sparkles size={18} className="mr-1" />
+                )}
+                AI Assist
+              </Button>
+            </div>
+
+            {status === 'generating' && (
+              <div className="flex items-center space-x-2 text-purple-600 animate-pulse text-sm font-bold ml-1">
+                <Sparkles size={14} />
+                <span>Generating recipe...</span>
+              </div>
+            )}
             
             <div>
               <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">Description</label>
@@ -214,6 +279,15 @@ const CreateRecipe = () => {
                 </select>
               </div>
             </div>
+
+            <Input 
+              label="Tags (comma separated)" 
+              name="tags" 
+              placeholder="e.g. italian, pasta, dinner" 
+              value={formData.tags} 
+              onChange={handleInputChange} 
+              disabled={status !== 'idle'} 
+            />
           </div>
 
           {/* Right Column: Ingredients and Steps */}
@@ -244,7 +318,7 @@ const CreateRecipe = () => {
                       disabled={status !== 'idle'}
                     />
                     {ingredients.length > 1 && status === 'idle' && (
-                      <button onClick={() => removeIngredient(index)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                      <button type="button" onClick={() => removeIngredient(index)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
                         <Minus size={18}/>
                       </button>
                     )}
@@ -282,7 +356,7 @@ const CreateRecipe = () => {
                       disabled={status !== 'idle'}
                     />
                     {steps.length > 1 && status === 'idle' && (
-                      <button onClick={() => removeStep(index)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                      <button type="button" onClick={() => removeStep(index)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
                         <Minus size={18}/>
                       </button>
                     )}
@@ -297,7 +371,7 @@ const CreateRecipe = () => {
           <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl flex items-start space-x-3 text-red-600 dark:text-red-400 animate-in fade-in slide-in-from-top-2">
             <AlertCircle size={20} className="mt-0.5 flex-shrink-0" />
             <div className="text-sm font-medium leading-relaxed">
-              <p className="font-bold">Moderation Notice</p>
+              <p className="font-bold">Notice</p>
               <p>{error}</p>
             </div>
           </div>

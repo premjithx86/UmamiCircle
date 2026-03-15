@@ -4,6 +4,7 @@ import api from '../services/api';
 import { ContentGrid } from '../components/ContentGrid';
 import { UserList } from '../components/UserList';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { EmptyState } from '../components/EmptyState';
 import { Search as SearchIcon, Filter, User as UserIcon, LayoutGrid } from 'lucide-react';
 
 const Search = () => {
@@ -104,16 +105,18 @@ const Search = () => {
                 <UserList users={results} />
               )
             ) : (
-              <div className="text-center py-20">
-                <div className="text-4xl mb-4">🔍</div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">No results found for "{query}"</h3>
-                <p className="text-gray-500 dark:text-gray-400 mt-1">Try a different keyword or check your spelling.</p>
-              </div>
+              <EmptyState
+                icon="🔍"
+                title={`No ${activeTab} found`}
+                message={`We couldn't find any results for "${query}". Try a different keyword or check your spelling.`}
+              />
             )
           ) : (
-            <div className="text-center py-20 text-gray-400">
-              <p>Type something above to start searching</p>
-            </div>
+            <EmptyState
+              icon="🍳"
+              title="Discover Something Delicious"
+              message="Search for recipes, tags, or your favorite chefs from around the world."
+            />
           )}
 
           {error && (

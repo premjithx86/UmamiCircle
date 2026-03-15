@@ -39,8 +39,17 @@ export const AuthProvider = ({ children }) => {
       return response.data.user;
     } catch (error) {
       console.error("Error syncing user:", error);
+      throw error; // Throw so caller can handle block/auth errors
     }
   };
+
+  useEffect(() => {
+    const handleBlocked = () => {
+      logout();
+    };
+    window.addEventListener('user-blocked', handleBlocked);
+    return () => window.removeEventListener('user-blocked', handleBlocked);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {

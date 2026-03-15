@@ -6,10 +6,10 @@ describe('OptimizedImage Component', () => {
   const cloudinaryUrl = 'https://res.cloudinary.com/demo/image/upload/v123/sample.jpg';
   const externalUrl = 'https://example.com/image.jpg';
 
-  it('applies optimization to Cloudinary URLs', () => {
-    render(<OptimizedImage src={cloudinaryUrl} alt="Test" width={300} height={200} />);
+  it('renders Cloudinary URLs without transformation as per requirements', () => {
+    render(<OptimizedImage src={cloudinaryUrl} alt="Test" width={300} />);
     const img = screen.getByRole('img');
-    expect(img.getAttribute('src')).toContain('/upload/q_auto,f_auto,w_300,h_200,c_fill/');
+    expect(img.getAttribute('src')).toBe(cloudinaryUrl);
   });
 
   it('does not transform external URLs', () => {

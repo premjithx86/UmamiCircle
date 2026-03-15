@@ -5,6 +5,7 @@ const { Conversation } = require('../models/Conversation');
 const { Message } = require('../models/Message');
 const { authMiddleware } = require('../middleware/auth');
 const { emitNewMessage } = require('../services/messagingService');
+const { createNotification } = require('../services/notificationService');
 
 /**
  * Get or create a conversation with a participant
@@ -58,10 +59,23 @@ router.get('/conversations', authMiddleware, async (req, res) => {
     const conversations = await Conversation.find({
       participants: currentUser._id,
     })
-    .populate('participants', 'username avatar name')
+    .populate('participants', 'username avatar name profilePicUrl blocked')
     .sort({ lastMessageAt: -1 });
 
-    res.status(200).json(conversations);
+    // Mark if the current user is blocked by the other participant or vice versa
+    const enhancedConversations = conversations.map(conv => {
+      const otherParticipant = conv.participants.find(p => p._id.toString() !== currentUser._id.toString());
+      const isBlockedByMe = currentUser.blocked.includes(otherParticipant?._id);
+      const isBlockingMe = otherParticipant?.blocked.includes(currentUser._id);
+      
+      return {
+        ...conv.toObject(),
+        isBlocked: isBlockedByMe || isBlockingMe,
+        blockType: isBlockedByMe ? 'you_blocked' : (isBlockingMe ? 'they_blocked' : null)
+      };
+    });
+
+    res.status(200).json(enhancedConversations);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -104,19 +118,87 @@ router.post('/', authMiddleware, async (req, res) => {
 
     await message.save();
 
-    // Update conversation last message
-    await Conversation.findByIdAndUpdate(conversationId, {
+    // Update conversation last message and increment unread count for others
+    const updateQuery = {
       lastMessage: content,
       lastMessageAt: Date.now(),
+    };
+
+    if (otherParticipant) {
+      updateQuery[`unreadCounts.${otherParticipant._id}`] = (conversation.unreadCounts?.get(otherParticipant._id.toString()) || 0) + 1;
+    }
+
+    await Conversation.findByIdAndUpdate(conversationId, {
+      $set: {
+        lastMessage: content,
+        lastMessageAt: Date.now(),
+      },
+      $inc: {
+        [`unreadCounts.${otherParticipant._id}`]: 1
+      }
     });
 
     // Populate sender info for frontend
-    const populatedMessage = await Message.findById(message._id).populate('sender', 'username avatar');
+    const populatedMessage = await Message.findById(message._id).populate('sender', 'username name profilePicUrl');
 
     // Emit real-time event
     emitNewMessage(conversationId, populatedMessage);
 
     res.status(201).json(populatedMessage);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Mark conversation as read
+ */
+router.put('/conversations/:conversationId/read', authMiddleware, async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const currentUid = req.user.uid;
+
+    const currentUser = await User.findOne({ firebaseUID: currentUid });
+    if (!currentUser) return res.status(404).json({ error: 'User not found' });
+
+    await Conversation.findByIdAndUpdate(conversationId, {
+      $set: { [`unreadCounts.${currentUser._id}`]: 0 }
+    });
+
+    // Also mark individual messages as read
+    await Message.updateMany(
+      { conversationId, sender: { $ne: currentUser._id }, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    res.status(200).json({ message: 'Conversation marked as read' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Delete a message
+ */
+router.delete('/:messageId', authMiddleware, async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const currentUid = req.user.uid;
+
+    const currentUser = await User.findOne({ firebaseUID: currentUid });
+    if (!currentUser) return res.status(404).json({ error: 'User not found' });
+
+    const message = await Message.findById(messageId);
+    if (!message) return res.status(404).json({ error: 'Message not found' });
+
+    // Only sender can delete their message
+    if (message.sender.toString() !== currentUser._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized to delete this message' });
+    }
+
+    await Message.findByIdAndDelete(messageId);
+
+    res.status(200).json({ message: 'Message deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -140,7 +222,7 @@ router.get('/:conversationId', authMiddleware, async (req, res) => {
     }
 
     const messages = await Message.find({ conversationId })
-      .populate('sender', 'username avatar')
+      .populate('sender', 'username name profilePicUrl')
       .sort({ createdAt: 1 });
 
     res.status(200).json(messages);

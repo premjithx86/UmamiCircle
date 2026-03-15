@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from './Button';
+import { Avatar } from './Avatar';
 
 export const CommentSection = ({
   comments = [],
@@ -51,16 +52,17 @@ export const CommentSection = ({
         ) : (
           comments.map((comment) => (
             <div key={comment._id} className="flex space-x-3 group">
-              <img
-                src={comment.user.avatar || 'https://via.placeholder.com/32'}
-                alt={comment.user.username}
-                className="w-8 h-8 rounded-full object-cover mt-1"
-              />
+              <Avatar user={comment.user} size="sm" className="mt-1" />
               <div className="flex-1 bg-gray-50 dark:bg-gray-800/50 rounded-2xl px-4 py-3 relative">
                 <div className="flex justify-between items-start">
-                  <span className="font-bold text-sm text-gray-900 dark:text-white">
-                    {comment.user.username}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-sm text-gray-900 dark:text-white leading-none">
+                      {comment.user.name || comment.user.username}
+                    </span>
+                    <span className="text-[10px] text-gray-500 mt-1">
+                      @{comment.user.username}
+                    </span>
+                  </div>
                   <span className="text-xs text-gray-400">
                     {new Date(comment.createdAt).toLocaleDateString()}
                   </span>

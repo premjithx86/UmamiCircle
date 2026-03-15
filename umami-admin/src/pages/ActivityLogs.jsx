@@ -1,22 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { getAuditLogs } from '../services/adminService';
-import { History, Filter, Loader2, Shield, User as UserIcon, FileText, AlertCircle, Search } from 'lucide-react';
+import { Search, Filter, Loader2, History, User, Calendar, Shield, Clock } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card, CardContent } from '../components/ui/card';
+import { Skeleton } from '../components/ui/skeleton';
+import { cn } from '../lib/utils';
+import { Copy, Check } from 'lucide-react';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../components/ui/tooltip';
 
 /**
- * Activity Logs page for viewing administrative audit trail.
- * @returns {JSX.Element}
+ * Helper component to display and copy IDs.
+ */
+const CopyableID = ({ id, className = "" }) => {
+  const [copied, setCopied] = useState(false);
+
+  const copy = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className={cn("flex items-center gap-2 font-mono text-[9px] group/id", className)}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="opacity-60 group-hover/id:opacity-100 transition-opacity cursor-help truncate max-w-[120px] lg:max-w-none">
+            {id}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent className="bg-primary text-white font-bold border-none text-[10px]">
+          Full ID: {id}
+        </TooltipContent>
+      </Tooltip>
+      <button 
+        onClick={copy}
+        className="p-1 rounded-md bg-muted/50 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all opacity-0 group-hover/id:opacity-100"
+      >
+        {copied ? <Check size={10} className="text-green-500" /> : <Copy size={10} />}
+      </button>
+    </div>
+  );
+};
+
+/**
+ * Activity Logs page for reviewing administrative actions.
  */
 export const ActivityLogs = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [adminId, setAdminId] = useState('');
   const [action, setAction] = useState('');
-  const [targetType, setTargetType] = useState('');
   const [error, setError] = useState(null);
 
   const fetchLogs = async () => {
     try {
       setLoading(true);
-      const data = await getAuditLogs({ action, targetType });
+      const data = await getAuditLogs({ adminId, action });
       setLogs(data);
       setError(null);
     } catch (err) {
@@ -29,121 +77,143 @@ export const ActivityLogs = () => {
 
   useEffect(() => {
     fetchLogs();
-  }, [action, targetType]);
+  }, [adminId, action]);
 
-  const getActionColor = (actionName) => {
-    if (actionName.includes('DELETE')) return 'text-red-600 bg-red-50';
-    if (actionName.includes('BLOCK')) return 'text-orange-600 bg-orange-50';
-    if (actionName.includes('RESOLVE')) return 'text-green-600 bg-green-50';
-    return 'text-blue-600 bg-blue-50';
+  const getActionBadge = (action) => {
+    const actionLower = action.toLowerCase();
+    if (actionLower.includes('delete')) return <Badge className="bg-destructive/10 text-destructive border-none text-[8px] font-black uppercase">Deleted</Badge>;
+    if (actionLower.includes('update')) return <Badge className="bg-blue-500/10 text-blue-500 border-none text-[8px] font-black uppercase">Updated</Badge>;
+    if (actionLower.includes('block')) return <Badge className="bg-orange-500/10 text-orange-500 border-none text-[8px] font-black uppercase">Blocked</Badge>;
+    if (actionLower.includes('unblock')) return <Badge className="bg-green-500/10 text-green-500 border-none text-[8px] font-black uppercase">Unblocked</Badge>;
+    return <Badge variant="secondary" className="border-none text-[8px] font-black uppercase">{action}</Badge>;
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Activity Logs</h1>
+    <div className="space-y-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-4xl font-black text-foreground tracking-tight uppercase italic">Ledger</h1>
+          <p className="text-muted-foreground font-medium mt-1 uppercase tracking-widest text-[10px]">Immutable record of administrative actions</p>
+        </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
-          <div className="flex items-center space-x-2">
-            <label htmlFor="action-filter" className="flex items-center text-sm font-medium text-gray-600">
-              <History className="w-4 h-4 mr-1" />
-              Action:
-            </label>
-            <select
-              id="action-filter"
-              className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm"
-              value={action}
-              onChange={(e) => setAction(e.target.value)}
-            >
-              <option value="">All Actions</option>
-              <option value="BLOCK_USER">Block User</option>
-              <option value="UNBLOCK_USER">Unblock User</option>
-              <option value="DELETE_USER">Delete User</option>
-              <option value="DELETE_POST">Delete Post</option>
-              <option value="DELETE_RECIPE">Delete Recipe</option>
-              <option value="RESOLVE_REPORT">Resolve Report</option>
-            </select>
-          </div>
-          <div className="flex items-center space-x-2">
-            <label htmlFor="type-filter" className="flex items-center text-sm font-medium text-gray-600">
-              <Filter className="w-4 h-4 mr-1" />
-              Target Type:
-            </label>
-            <select
-              id="type-filter"
-              className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white text-sm"
-              value={targetType}
-              onChange={(e) => setTargetType(e.target.value)}
-            >
-              <option value="">All Types</option>
-              <option value="User">User</option>
-              <option value="Post">Post</option>
-              <option value="Recipe">Recipe</option>
-              <option value="Report">Report</option>
-            </select>
-          </div>
+      <div className="flex flex-col md:flex-row items-center gap-4">
+        <div className="relative group flex-1 w-full">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors size-5" />
+          <Input
+            placeholder="Search by Admin ID or Action..."
+            className="pl-12 h-14 rounded-2xl bg-card border-border shadow-sm focus-visible:ring-primary text-sm font-medium"
+            value={action}
+            onChange={(e) => setAction(e.target.value)}
+          />
         </div>
+      </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                <th className="px-6 py-4 font-semibold">Admin</th>
-                <th className="px-6 py-4 font-semibold">Action</th>
-                <th className="px-6 py-4 font-semibold">Target</th>
-                <th className="px-6 py-4 font-semibold">Details</th>
-                <th className="px-6 py-4 font-semibold text-right">Timestamp</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
+      <Card className="border-border bg-card shadow-lg rounded-[2.5rem] overflow-hidden">
+        {/* Desktop View */}
+        <div className="hidden md:block">
+          <Table>
+            <TableHeader className="bg-muted/30">
+              <TableRow className="hover:bg-transparent border-border/50">
+                <TableHead className="px-8 py-5 text-[9px] font-black uppercase tracking-widest">Administrator</TableHead>
+                <TableHead className="py-5 text-[9px] font-black uppercase tracking-widest">Operation</TableHead>
+                <TableHead className="py-5 text-[9px] font-black uppercase tracking-widest">Timestamp</TableHead>
+                <TableHead className="px-8 py-5 text-[9px] font-black uppercase tracking-widest">Details</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {loading && logs.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center">
-                    <Loader2 className="w-8 h-8 text-orange-500 animate-spin mx-auto" />
-                    <p className="text-gray-500 mt-2">Loading audit logs...</p>
-                  </td>
-                </tr>
+                Array(10).fill(0).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell colSpan={4} className="p-6"><Skeleton className="h-12 w-full rounded-xl" /></TableCell>
+                  </TableRow>
+                ))
               ) : logs.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
-                    No logs found matching your criteria.
-                  </td>
-                </tr>
+                <TableRow>
+                  <TableCell colSpan={4} className="py-32 text-center text-muted-foreground font-bold uppercase tracking-widest text-xs opacity-40">
+                    No activity recorded
+                  </TableCell>
+                </TableRow>
               ) : (
                 logs.map((log) => (
-                  <tr key={log._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="text-sm">
-                        <p className="font-medium text-gray-900">@{log.admin?.username || 'Unknown'}</p>
-                        <p className="text-gray-500 text-xs">{log.admin?.role}</p>
+                  <TableRow key={log._id} className="hover:bg-muted/20 border-border/50 transition-all duration-300">
+                    <TableCell className="px-8 py-6">
+                      <div className="flex items-center gap-3">
+                        <div className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground border border-border">
+                          <Shield size={14} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-black text-xs uppercase tracking-tight text-foreground">Admin Session</p>
+                          <CopyableID id={log.adminId} />
+                        </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-tight ${getActionColor(log.action)}`}>
-                        {log.action.replace('_', ' ')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm">
-                        <p className="font-medium text-gray-800">{log.targetType}</p>
-                        <p className="text-gray-500 text-xs font-mono">{log.targetId?.substring(0, 8)}...</p>
+                    </TableCell>
+                    <TableCell className="py-6">
+                      {getActionBadge(log.action)}
+                    </TableCell>
+                    <TableCell className="py-6">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Clock size={12} />
+                        <span className="text-[10px] font-bold uppercase tracking-tighter">
+                          {new Date(log.createdAt).toLocaleString()}
+                        </span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                      {log.details ? JSON.stringify(log.details) : '-'}
-                    </td>
-                    <td className="px-6 py-4 text-right text-sm text-gray-500">
-                      {new Date(log.createdAt).toLocaleString()}
-                    </td>
-                  </tr>
+                    </TableCell>
+                      <TableCell className="px-8 py-6">
+                        <p className="text-xs font-medium text-muted-foreground leading-relaxed italic max-w-md">
+                          {typeof log.details === 'object' && log.details !== null ? JSON.stringify(log.details) : String(log.details || 'No additional parameters recorded')}
+                        </p>
+                      </TableCell>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
-      </div>
+
+        {/* Mobile View */}
+        <div className="md:hidden divide-y divide-border/50">
+          {loading && logs.length === 0 ? (
+            <div className="p-6 space-y-4">
+              <Skeleton className="h-32 w-full rounded-2xl" />
+              <Skeleton className="h-32 w-full rounded-2xl" />
+            </div>
+          ) : logs.length === 0 ? (
+            <div className="py-20 text-center text-muted-foreground font-bold uppercase tracking-widest text-xs opacity-40">
+              No activity recorded
+            </div>
+          ) : (
+            logs.map((log) => (
+              <div key={log._id} className="p-6 space-y-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground border border-border">
+                      <Shield size={14} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Administrator</p>
+                      <CopyableID id={log.adminId} className="mt-0.5" />
+                    </div>
+                  </div>
+                  {getActionBadge(log.action)}
+                </div>
+                
+                <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
+                  <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2">Operation Details</p>
+                  <p className="text-xs font-medium italic">
+                    "{typeof log.details === 'object' && log.details !== null ? JSON.stringify(log.details) : String(log.details || 'System automated task')}"
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-60">
+                  <Clock size={10} />
+                  {new Date(log.createdAt).toLocaleString()}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </Card>
     </div>
   );
 };

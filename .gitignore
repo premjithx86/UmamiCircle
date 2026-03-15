@@ -1,3 +1,23 @@
+# React default assets (boilerplate, not your work)
+umami-frontend/src/assets/react.svg
+umami-admin/src/assets/react.svg
+umami-admin/public/vite.svg
+umami-frontend/public/vite.svg
+
+# Frontend env (has real Firebase keys)
+umami-frontend/.env
+umami-frontend/.env.local
+umami-frontend/.env.production
+umami-frontend/.env.development
+umami-frontend/.env.test
+
+# Admin env
+umami-admin/.env
+umami-admin/.env.local
+umami-admin/.env.production
+umami-admin/.env.development
+umami-admin/.env.test
+
 # Dependencies
 node_modules/
 umami-frontend/node_modules/
@@ -11,12 +31,36 @@ umami-admin/dist/
 # Environment
 .env
 .env.local
+.env.production
+.env.development
+.env.test
+umami-frontend/.env
+umami-frontend/.env.local
+umami-frontend/.env.production
+umami-frontend/.env.development
+umami-frontend/.env.test
+umami-admin/.env
+umami-admin/.env.local
+umami-admin/.env.production
+umami-admin/.env.development
+umami-admin/.env.test
+
+# Conductor
+tests/
+conductor/
+GEMINI.md
+
 
 # Coverage
 coverage/
 umami-frontend/coverage/
 umami-admin/coverage/
 
+# Generated files
+structure.txt
+
 # Misc
 .DS_Store
 *.log
+.eslintcache
+Thumbs.db

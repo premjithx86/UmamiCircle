@@ -9,6 +9,7 @@ import { ModerationQueue } from './pages/ModerationQueue';
 import { Reports } from './pages/Reports';
 import { ActivityLogs } from './pages/ActivityLogs';
 import { CMSComingSoon } from './pages/CMSComingSoon';
+import { Toaster } from './components/ui/sonner';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      <Toaster position="top-right" richColors />
     </AdminProvider>
   );
 }

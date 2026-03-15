@@ -14,6 +14,11 @@ const ConversationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  unreadCounts: {
+    type: Map,
+    of: Number,
+    default: {},
+  },
 }, { timestamps: true });
 
 // Validation to ensure at least 2 participants

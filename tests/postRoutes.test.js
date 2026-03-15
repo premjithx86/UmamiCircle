@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const Post = require("../src/models/Post");
 const User = require("../src/models/User");
+const ModerationCache = require("../src/models/ModerationCache");
 
 let mongoServer;
 
@@ -23,6 +24,7 @@ describe("Post Routes Integration Test", () => {
   beforeEach(async () => {
     await Post.deleteMany({});
     await User.deleteMany({});
+    await ModerationCache.deleteMany({});
     
     // Create a user that matches the mock authMiddleware (uid: "mock-uid-123")
     testUser = new User({
@@ -112,5 +114,70 @@ describe("Post Routes Integration Test", () => {
     // Verify in DB
     const postAfterUnlike = await Post.findById(postId);
     expect(postAfterUnlike.likes).not.toContainEqual(testUser._id);
+  });
+
+  it("should update own post caption and tags", async () => {
+    // 1. Create post
+    const postRes = await request(app)
+      .post("/api/posts")
+      .set("Authorization", "Bearer mock-uid-123")
+      .field("caption", "Original caption")
+      .attach("image", Buffer.from("data"), "test.jpg");
+    
+    const postId = postRes.body._id;
+
+    // 2. Update post
+    const updateRes = await request(app)
+      .put(`/api/posts/${postId}`)
+      .set("Authorization", "Bearer mock-uid-123")
+      .send({
+        caption: "Updated caption",
+        tags: ["updated", "tags"]
+      });
+
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.caption).toBe("Updated caption");
+    expect(updateRes.body.tags).toContain("updated");
+  });
+
+  it("should return 403 if updating someone else's post", async () => {
+    // 1. Create post by user1
+    const post = new Post({
+      user: new mongoose.Types.ObjectId(),
+      caption: "Other user post",
+      imageUrl: "http://example.com/image.jpg",
+      imageHash: "hash123",
+    });
+    await post.save();
+
+    // 2. Try to update by mock-uid-123
+    const res = await request(app)
+      .put(`/api/posts/${post._id}`)
+      .set("Authorization", "Bearer mock-uid-123")
+      .send({ caption: "Hacked" });
+
+    expect(res.status).toBe(403);
+  });
+
+  it("should delete own post", async () => {
+    // 1. Create post
+    const postRes = await request(app)
+      .post("/api/posts")
+      .set("Authorization", "Bearer mock-uid-123")
+      .field("caption", "To be deleted")
+      .attach("image", Buffer.from("data"), "test.jpg");
+    
+    const postId = postRes.body._id;
+
+    // 2. Delete post
+    const deleteRes = await request(app)
+      .delete(`/api/posts/${postId}`)
+      .set("Authorization", "Bearer mock-uid-123");
+
+    expect(deleteRes.status).toBe(200);
+    
+    // Verify in DB
+    const deletedPost = await Post.findById(postId);
+    expect(deletedPost).toBeNull();
   });
 });

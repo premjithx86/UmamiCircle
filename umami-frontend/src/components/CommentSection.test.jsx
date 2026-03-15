@@ -4,8 +4,8 @@ import { CommentSection } from './CommentSection';
 
 describe('CommentSection Component', () => {
   const mockComments = [
-    { _id: 'c1', user: { username: 'user1', avatar: '' }, content: 'First comment', createdAt: new Date().toISOString() },
-    { _id: 'c2', user: { username: 'user2', avatar: '' }, content: 'Second comment', createdAt: new Date().toISOString() },
+    { _id: 'c1', user: { username: 'user1', name: 'User One', avatar: '' }, content: 'First comment', createdAt: new Date().toISOString() },
+    { _id: 'c2', user: { username: 'user2', name: 'User Two', avatar: '' }, content: 'Second comment', createdAt: new Date().toISOString() },
   ];
 
   it('renders a list of comments', () => {
@@ -13,8 +13,8 @@ describe('CommentSection Component', () => {
     
     expect(screen.getByText('First comment')).toBeInTheDocument();
     expect(screen.getByText('Second comment')).toBeInTheDocument();
-    expect(screen.getByText('user1')).toBeInTheDocument();
-    expect(screen.getByText('user2')).toBeInTheDocument();
+    expect(screen.getByText('User One')).toBeInTheDocument();
+    expect(screen.getByText(/@user1/i)).toBeInTheDocument();
   });
 
   it('calls onAddComment when form is submitted', () => {

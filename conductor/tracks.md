@@ -51,3 +51,33 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] ~~**Track: Content Moderation & Upload Pipeline Connection**~~ (Archived)
   *Link: [./archive/content_moderation_upload_20260312/](./archive/content_moderation_upload_20260312/)*
+
+---
+
+- [x] ~~**Track: Maintenance and Testing Improvement**~~ (Archived)
+  *Link: [./archive/maintenance_testing_20260313/plan.md](./archive/maintenance_testing_20260313/plan.md)*
+
+---
+
+- [x] ~~**Track: Profile Improvements and Functional Fixes**~~ (Archived)
+  *Link: [./archive/profile_and_fixes_20260313/plan.md](./archive/profile_and_fixes_20260313/plan.md)*
+
+---
+
+- [x] ~~**Track: Critical Bug Fixes and Optimization**~~ (Archived)
+  *Link: [./archive/bug_fixes_20260313/plan.md](./archive/bug_fixes_20260313/plan.md)*
+
+---
+
+- [~] **Track: Social Interactions (Likes, Comments, Bookmarks)**
+  *Link: [./tracks/social_interactions_20260313/plan.md](./tracks/social_interactions_20260313/plan.md)*
+
+---
+
+- [x] ~~**Track: Profile and Post Card Fixes**~~ (Archived)
+  *Link: [./archive/bug_fixes_20260313_v2/plan.md](./archive/bug_fixes_20260313_v2/plan.md)*
+
+---
+
+- [x] **Track: Admin Debug and Modernization**
+  *Link: [./admin_debug_20260314.md](./admin_debug_20260314.md)*

@@ -91,7 +91,7 @@ router.post("/unfollow/:id", authMiddleware, async (req, res) => {
 });
 
 /**
- * Block a user
+ * Block a user (Toggle)
  */
 router.post("/block/:id", authMiddleware, async (req, res) => {
   try {
@@ -105,19 +105,28 @@ router.post("/block/:id", authMiddleware, async (req, res) => {
       return res.status(400).json({ error: "You cannot block yourself" });
     }
 
-    if (!currentUser.blocked.includes(targetUserId)) {
+    const isBlocked = currentUser.blocked.includes(targetUserId);
+
+    if (isBlocked) {
+      // Unblock
+      currentUser.blocked = currentUser.blocked.filter(id => id.toString() !== targetUserId);
+      await currentUser.save();
+      return res.status(200).json({ message: "User unblocked successfully", isBlocked: false });
+    } else {
+      // Block
       currentUser.blocked.push(targetUserId);
 
       // Auto-unfollow when blocking
       currentUser.following = currentUser.following.filter(id => id.toString() !== targetUserId);
-      await currentUser.save();
-      // Also remove current user from target's following if they followed
+      
+      // Also remove current user from target's following/followers if they interacted
       await User.findByIdAndUpdate(targetUserId, {
         $pull: { following: currentUser._id, followers: currentUser._id }
       });
-    }
 
-    res.status(200).json({ message: "User blocked successfully" });
+      await currentUser.save();
+      return res.status(200).json({ message: "User blocked successfully", isBlocked: true });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -138,6 +147,23 @@ router.post("/unblock/:id", authMiddleware, async (req, res) => {
     await currentUser.save();
 
     res.status(200).json({ message: "User unblocked successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Get list of blocked users
+ */
+router.get("/blocked", authMiddleware, async (req, res) => {
+  try {
+    const currentUid = req.user.uid;
+    const currentUser = await User.findOne({ firebaseUID: currentUid })
+      .populate("blocked", "username name profilePicUrl bio");
+    
+    if (!currentUser) return res.status(404).json({ error: "User not found" });
+
+    res.status(200).json(currentUser.blocked);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

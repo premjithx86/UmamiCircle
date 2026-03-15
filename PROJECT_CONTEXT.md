@@ -52,7 +52,9 @@
 
 ## 7. Frontend-Backend Connection
 - **Tool:** Axios
-- **Frontend Interceptor:** `umami-frontend/src/services/api.js` (automatically attaches Firebase ID tokens to requests)
+- **Frontend Interceptor:** `umami-frontend/src/services/api.js`
+    - Automatically attaches Firebase ID tokens to requests.
+    - **Resilience:** Includes a response interceptor that catches `429 Too Many Requests` errors, waits 10 seconds, and retries the request automatically.
 - **Admin Service:** `umami-admin/src/services/adminService.js` (manually attaches JWT tokens to requests)
 
 ## 8. Socket.io Configuration
@@ -64,10 +66,11 @@
     - `new_message`: Real-time chat message delivery
     - `typing` / `stop_typing`: Chat indicators
     - `user_typing` / `user_stopped_typing`: Frontend listeners
+    - `new_notification`: Triggers navbar badge updates and Notifications page refreshes
 
 ## 9. Image Moderation Pipeline
 1.  **Client Request:** Image uploaded to `/api/posts` or `/api/recipes`
-2.  **Deduplication:** MD5 hash check (`imageHash`) to prevent duplicate uploads
+2.  **Deduplication:** MD5 hash check (`imageHash`) to prevent duplicate uploads (cleared in test environments via `ModerationCache`)
 3.  **Safety Check:** Sightengine API for nudity, drugs, and offensive content
 4.  **Content Verification:** Google Cloud Vision for food detection
 5.  **Persistence:** Successful uploads are stored in Cloudinary and the URL is saved to MongoDB
@@ -76,9 +79,15 @@
 1.  **Profanity Check:** `obscenity` library filters offensive language from captions/descriptions
 2.  **Censorship:** Profane words are replaced with asterisks (`*`)
 3.  **Food Relevance:** Groq Cloud LLM analyzes the text to ensure the content is food-related
-4.  **Rejection:** If the content is deemed irrelevant to food, the request is rejected with a `400 Bad Request`
+4.  **AI Assistant Exception:** AI-generated recipe content (via `llama-3.3-70b-versatile`) skips the obscenity filter to avoid flagging cooking terms like "breast" or "thighs", but the input dish name is still moderated.
 
-## 11. Admin Seeding
+## 11. Messaging System Features
+- **Real-time:** Socket.io delivery with `unreadCounts` tracking in the `Conversation` model.
+- **Indicators:** Delivery status (Sent/Seen) and real-time typing indicators.
+- **Media:** Supports image sharing within messages using the standard upload pipeline.
+- **UX:** Emoji picker integration and multiline input support.
+
+## 12. Admin Seeding
 - **Script:** `scripts/seedAdmin.js`
 - **Default Credentials:**
     - **Email:** `admin@umamicircle.com`

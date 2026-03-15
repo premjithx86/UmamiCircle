@@ -1,13 +1,15 @@
 import React from 'react';
+import { Card as CardRoot } from './ui/Card';
+import { cn } from '../utils/cn';
 
 const Card = ({ children, className = '', ...props }) => {
   return (
-    <div
-      className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden ${className}`}
+    <CardRoot
+      className={cn("border-border bg-card shadow-sm overflow-hidden", className)}
       {...props}
     >
       {children}
-    </div>
+    </CardRoot>
   );
 };
 

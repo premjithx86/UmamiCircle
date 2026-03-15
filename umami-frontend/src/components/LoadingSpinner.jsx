@@ -8,7 +8,7 @@ const LoadingSpinner = ({ size = 'md' }) => {
   };
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center" data-testid="loading-spinner">
       <div
         className={`${sizes[size]} animate-spin rounded-full border-4 border-gray-200 border-t-primary`}
       />

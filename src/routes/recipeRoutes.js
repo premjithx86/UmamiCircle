@@ -6,6 +6,43 @@ const { upload, processImageModeration } = require("../middleware/uploadMiddlewa
 const { moderateText } = require("../middleware/textModerationMiddleware");
 const { authMiddleware } = require("../middleware/auth");
 const { createNotification } = require("../services/notificationService");
+const { generateRecipeSuggestion } = require("../services/aiService");
+const { moderateAIContent, deleteFromCloudinary } = require("../services/moderationService");
+
+/**
+ * AI suggest recipe endpoint
+ */
+router.post("/ai-suggest", authMiddleware, async (req, res) => {
+  try {
+    const { dishName } = req.body;
+    if (!dishName) {
+      return res.status(400).json({ error: "Dish name is required" });
+    }
+
+    // Moderate the user-provided dish name input
+    if (!moderateAIContent(dishName)) {
+      return res.status(400).json({ error: "Dish name contains inappropriate language" });
+    }
+
+    let suggestion;
+    try {
+      suggestion = await generateRecipeSuggestion(dishName);
+    } catch (aiError) {
+      console.error("aiService.generateRecipeSuggestion failed:", aiError);
+      return res.status(500).json({ 
+        error: "AI suggestion unavailable, please fill manually",
+        details: aiError.message 
+      });
+    }
+
+    // Return AI suggestion directly without moderating output
+    // Groq content is trusted and obscenity filters often flag cooking terms (e.g. "breast", "thighs")
+    res.status(200).json(suggestion);
+  } catch (error) {
+    console.error("Unexpected AI Suggest Route Error:", error);
+    res.status(500).json({ error: "An unexpected error occurred during AI suggestion" });
+  }
+});
 
 /**
  * Helper to handle recipe creation logic
@@ -81,7 +118,7 @@ router.post("/", authMiddleware, (req, res, next) => {
  */
 router.get("/:id", async (req, res) => {
   try {
-    const recipe = await Recipe.findById(req.params.id)
+    const recipe = await Recipe.findOne({ _id: req.params.id, isHidden: { $ne: true } })
       .populate("user", "username profilePicUrl name");
     
     if (!recipe) {
@@ -92,6 +129,64 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching recipe:", error.message);
     res.status(500).json({ error: "Failed to fetch recipe" });
+  }
+});
+
+/**
+ * Update a recipe (description and tags only for now)
+ */
+router.put("/:id", authMiddleware, moderateText, async (req, res) => {
+  try {
+    const { description, tags } = req.body;
+    const recipeId = req.params.id;
+    const currentUid = req.user.uid;
+
+    const userDoc = await User.findOne({ firebaseUID: currentUid });
+    const recipe = await Recipe.findById(recipeId);
+
+    if (!recipe) return res.status(404).json({ error: "Recipe not found" });
+    if (recipe.user.toString() !== userDoc._id.toString()) {
+      return res.status(403).json({ error: "Unauthorized to edit this recipe" });
+    }
+
+    recipe.description = req.censoredText || description || recipe.description;
+    if (tags) {
+      recipe.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+    }
+
+    await recipe.save();
+    res.status(200).json(recipe);
+  } catch (error) {
+    console.error("Error updating recipe:", error);
+    res.status(500).json({ error: "Failed to update recipe" });
+  }
+});
+
+/**
+ * Delete a recipe
+ */
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    const currentUid = req.user.uid;
+
+    const userDoc = await User.findOne({ firebaseUID: currentUid });
+    const recipe = await Recipe.findById(recipeId);
+
+    if (!recipe) return res.status(404).json({ error: "Recipe not found" });
+    if (recipe.user.toString() !== userDoc._id.toString()) {
+      return res.status(403).json({ error: "Unauthorized to delete this recipe" });
+    }
+
+    if (recipe.imageUrl) {
+      await deleteFromCloudinary(recipe.imageUrl);
+    }
+
+    await Recipe.findByIdAndDelete(recipeId);
+    res.status(200).json({ message: "Recipe deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting recipe:", error);
+    res.status(500).json({ error: "Failed to delete recipe" });
   }
 });
 
@@ -136,6 +231,51 @@ router.post("/like/:id", authMiddleware, async (req, res) => {
   } catch (error) {
     console.error("Error toggling like:", error);
     res.status(500).json({ error: "Failed to toggle like" });
+  }
+});
+
+/**
+ * Toggle bookmark on a recipe
+ */
+router.post("/:id/bookmark", authMiddleware, async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    const currentUid = req.user.uid;
+
+    const user = await User.findOne({ firebaseUID: currentUid });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const bookmarkIndex = user.bookmarks.findIndex(
+      (b) => b.targetType === "Recipe" && b.targetId.toString() === recipeId
+    );
+
+    if (bookmarkIndex === -1) {
+      user.bookmarks.push({ targetType: "Recipe", targetId: recipeId });
+      await Recipe.findByIdAndUpdate(recipeId, { $addToSet: { bookmarks: user._id } });
+      await user.save();
+      return res.status(200).json({ message: "Recipe bookmarked successfully", isBookmarked: true });
+    } else {
+      user.bookmarks.splice(bookmarkIndex, 1);
+      await Recipe.findByIdAndUpdate(recipeId, { $pull: { bookmarks: user._id } });
+      await user.save();
+      return res.status(200).json({ message: "Bookmark removed successfully", isBookmarked: false });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Get recipes by user ID
+ */
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const recipes = await Recipe.find({ user: req.params.userId, isHidden: { $ne: true } })
+      .populate("user", "username name profilePicUrl")
+      .sort({ createdAt: -1 });
+    res.status(200).json(recipes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

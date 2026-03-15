@@ -71,31 +71,69 @@ const checkImageSafety = async (imageBuffer) => {
 };
 
 /**
- * Verifies if image contains food using Hugging Face food detection model.
+ * Verifies if image contains food using Hugging Face Vit model.
  */
 async function verifyFoodContent(imageBuffer) {
   if (process.env.NODE_ENV === "test") {
     return true;
   }
 
-  const response = await fetch(
-    "https://router.huggingface.co/hf-inference/models/nateraw/food",
-    {
-      headers: { 
-        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-        "Content-Type": "application/octet-stream"
-      },
-      method: "POST",
-      body: imageBuffer,
+  const FOOD_KEYWORDS = [
+    'food', 'dish', 'cuisine', 'meal', 'breakfast', 'lunch', 'dinner', 'snack', 
+    'drink', 'beverage', 'fruit', 'vegetable', 'meat', 'seafood', 'dessert', 
+    'bread', 'cake', 'soup', 'rice', 'pasta', 'pizza', 'burger', 'sandwich', 
+    'salad', 'curry', 'chicken', 'fish', 'beef', 'pork', 'egg', 'cheese', 
+    'milk', 'coffee', 'tea', 'juice', 'hotdog', 'taco', 'burrito', 'sushi',
+    'ramen', 'noodles', 'steak', 'pastry', 'cookie', 'pie', 'chocolate', 'ice cream'
+  ];
+
+  try {
+    const response = await fetch(
+      "https://router.huggingface.co/hf-inference/models/google/vit-base-patch16-224",
+      {
+        headers: { 
+          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+          "Content-Type": "application/octet-stream"
+        },
+        method: "POST",
+        body: imageBuffer,
+      }
+    );
+    const result = await response.json();
+    
+    // LOGGING: Full Hugging Face API response
+    console.log("Hugging Face Vit Model Response:", JSON.stringify(result, null, 2));
+
+    if (Array.isArray(result) && result.length > 0) {
+      // Check top 5 results
+      const top5 = result.slice(0, 5);
+      const topScoresLog = top5.map(r => `${r.label}: ${r.score.toFixed(4)}`).join(", ");
+      console.log("Top Food Detection Scores:", topScoresLog);
+
+      // Look for food-related keywords in any of the top 5 results
+      const foodMatch = top5.find(prediction => {
+        const label = prediction.label.toLowerCase();
+        return prediction.score > 0.05 && (
+          FOOD_KEYWORDS.some(keyword => label.includes(keyword))
+        );
+      });
+
+      if (foodMatch) {
+        console.log(`MATCH FOUND: ${foodMatch.label} (${foodMatch.score.toFixed(4)}) matches food criteria.`);
+        return true;
+      } else {
+        console.log("REJECTION REASON: No food-related labels found in top 5 results with score > 0.05");
+      }
+    } else {
+      console.log("REJECTION REASON: Invalid API response format or empty result.");
     }
-  );
-  const result = await response.json();
-  
-  // If result is an array with at least one classification, it's food
-  if (Array.isArray(result) && result.length > 0 && result[0].score > 0.1) {
-    return true; // food detected
+  } catch (error) {
+    console.error("Hugging Face API Error:", error.message);
+    // On API failure, we might want to allow it or block it. 
+    // Given requirements, we block it with a generic error if the detection fails.
   }
-  throw new Error("Please upload food-related content.");
+
+  throw new Error("Please upload a food-related image.");
 }
 
 /**
@@ -150,10 +188,84 @@ const validateFoodRelevance = async (text) => {
   }
 };
 
+const { 
+  RegExpMatcher, 
+  englishDataset, 
+  englishRecommendedTransformers 
+} = require('obscenity');
+
+const matcher = new RegExpMatcher({
+  ...englishDataset.build(),
+  ...englishRecommendedTransformers,
+});
+
+/**
+ * Moderates AI generated content
+ * @param {string} text - Text to moderate
+ * @returns {boolean} - True if clean, false if inappropriate
+ */
+const moderateAIContent = (text) => {
+  if (!text) return true;
+  return !matcher.hasMatch(text);
+};
+
+/**
+ * Extracts public_id from a Cloudinary URL.
+ * URL format: https://res.cloudinary.com/[cloud_name]/image/upload/v[version]/[folder]/[public_id].[extension]
+ * @param {string} url - The full Cloudinary URL.
+ * @returns {string|null} - The public_id or null if not a valid Cloudinary URL.
+ */
+const extractCloudinaryPublicId = (url) => {
+  if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) return null;
+
+  try {
+    const parts = url.split('/upload/');
+    if (parts.length < 2) return null;
+
+    // After /upload/, skip the version (v12345678) if it exists
+    const pathAfterUpload = parts[1];
+    const pathParts = pathAfterUpload.split('/');
+    
+    // Remove the version part (starts with 'v')
+    const finalPathParts = pathParts.filter(part => !part.startsWith('v') || isNaN(part.substring(1)));
+    
+    // Join back and remove file extension
+    const fullPublicIdWithExt = finalPathParts.join('/');
+    const lastDotIndex = fullPublicIdWithExt.lastIndexOf('.');
+    
+    if (lastDotIndex === -1) return fullPublicIdWithExt;
+    return fullPublicIdWithExt.substring(0, lastDotIndex);
+  } catch (error) {
+    console.error("Error extracting Cloudinary Public ID:", error);
+    return null;
+  }
+};
+
+/**
+ * Deletes an image from Cloudinary by its URL.
+ * @param {string} url - The full Cloudinary URL.
+ */
+const deleteFromCloudinary = async (url) => {
+  if (process.env.NODE_ENV === "test") return;
+  
+  const publicId = extractCloudinaryPublicId(url);
+  if (!publicId) return;
+
+  try {
+    await cloudinary.uploader.destroy(publicId);
+    console.log(`Successfully deleted image from Cloudinary: ${publicId}`);
+  } catch (error) {
+    console.error(`Failed to delete image from Cloudinary (${publicId}):`, error.message);
+  }
+};
+
 module.exports = {
   generateHash,
   checkImageSafety,
   verifyFoodContent,
   uploadToCloudinary,
   validateFoodRelevance,
+  moderateAIContent,
+  extractCloudinaryPublicId,
+  deleteFromCloudinary,
 };

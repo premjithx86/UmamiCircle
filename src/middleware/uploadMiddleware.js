@@ -93,7 +93,72 @@ const processImageModeration = async (req, res, next) => {
   }
 };
 
+/**
+ * Middleware for avatar moderation (NSFW only, skip food check)
+ * Implements MD5 hashing and deduplication.
+ */
+const processAvatarModeration = async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No image file uploaded" });
+  }
+
+  try {
+    const imageBuffer = req.file.buffer;
+    
+    // 1. Generate Hash for Deduplication
+    const hash = generateHash(imageBuffer);
+    req.imageHash = hash;
+
+    // 2. Check Moderation Cache
+    const cachedResult = await ModerationCache.findOne({ imageHash: hash });
+    
+    if (cachedResult) {
+      if (cachedResult.status === 'rejected') {
+        return res.status(400).json({ 
+          error: cachedResult.reason || "Inappropriate content detected. Please upload a safe profile picture." 
+        });
+      }
+      
+      if (cachedResult.status === 'approved') {
+        req.imageUrl = cachedResult.cloudinaryUrl;
+        req.isDuplicate = true;
+        return next();
+      }
+    }
+
+    // 3. NSFW Check (Sightengine)
+    const safety = await checkImageSafety(imageBuffer);
+    if (!safety.safe) {
+      // Save rejection to cache
+      await ModerationCache.create({
+        imageHash: hash,
+        status: 'rejected',
+        reason: "Inappropriate content detected. Please upload a safe profile picture."
+      });
+      return res.status(400).json({ error: "Inappropriate content detected. Please upload a safe profile picture." });
+    }
+
+    // 4. Upload to Cloudinary (in 'avatars' folder)
+    const result = await uploadToCloudinary(imageBuffer, "avatars");
+    req.imageUrl = result.secure_url;
+    req.isDuplicate = false;
+
+    // 5. Save approval to cache
+    await ModerationCache.create({
+      imageHash: hash,
+      status: 'approved',
+      cloudinaryUrl: result.secure_url
+    });
+    
+    next();
+  } catch (error) {
+    console.error("Avatar moderation error:", error);
+    res.status(500).json({ error: error.message || "Moderation failed" });
+  }
+};
+
 module.exports = {
   upload,
   processImageModeration,
+  processAvatarModeration
 };

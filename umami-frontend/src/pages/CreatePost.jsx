@@ -135,6 +135,7 @@ const CreatePost = () => {
             accept="image/*"
             className="hidden"
             disabled={status !== 'idle'}
+            data-testid="file-input"
           />
         </Card>
 

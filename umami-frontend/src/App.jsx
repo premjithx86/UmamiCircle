@@ -22,6 +22,7 @@ const Login = lazy(() => import('./pages/Login').then(m => ({ default: m.Login }
 const Signup = lazy(() => import('./pages/Signup').then(m => ({ default: m.Signup })));
 const CreatePost = lazy(() => import('./pages/CreatePost').then(m => ({ default: m.CreatePost })));
 const CreateRecipe = lazy(() => import('./pages/CreateRecipe').then(m => ({ default: m.CreateRecipe })));
+const AIChat = lazy(() => import('./pages/AIChat').then(m => ({ default: m.AIChat })));
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
                     <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                     <Route path="create/post" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
                     <Route path="create/recipe" element={<ProtectedRoute><CreateRecipe /></ProtectedRoute>} />
+                    <Route path="ai-chat" element={<ProtectedRoute><AIChat /></ProtectedRoute>} />
                   </Route>
                 </Routes>
               </Suspense>

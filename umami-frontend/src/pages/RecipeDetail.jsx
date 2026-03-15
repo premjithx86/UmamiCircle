@@ -9,6 +9,11 @@ import { TagList } from '../components/TagList';
 import { EngagementBar } from '../components/EngagementBar';
 import { CommentSection } from '../components/CommentSection';
 import { ShareModal } from '../components/ShareModal';
+import { ContentActions } from '../components/ContentActions';
+import { EditContentModal } from '../components/EditContentModal';
+import { ReportModal } from '../components/ReportModal';
+import { ConfirmModal } from '../components/common/ConfirmModal';
+import { useSocialActions } from '../hooks/useSocialActions';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -18,18 +23,45 @@ export const RecipeDetail = () => {
   const { userData } = useAuth();
   const [loading, setLoading] = useState(true);
   const [recipe, setRecipe] = useState(null);
+  const [comments, setComments] = useState([]);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState(null);
 
+  const {
+    isLiked,
+    likesCount,
+    isBookmarked,
+    handleLikeToggle,
+    handleBookmarkToggle,
+  } = useSocialActions('Recipe', recipe);
+
   useEffect(() => {
-    const fetchRecipe = async () => {
+    const fetchRecipeAndComments = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/recipes/${id}`);
-        setRecipe(response.data);
+        const [recipeRes, commentsRes] = await Promise.all([
+          api.get(`/recipes/${id}`),
+          api.get(`/comments/Recipe/${id}`)
+        ]);
+        setRecipe(recipeRes.data);
+        setComments(commentsRes.data);
         setError(null);
+
+        // Handle scroll to comments if hash present
+        if (window.location.hash === '#comments') {
+          setTimeout(() => {
+            const element = document.getElementById('comments');
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 500);
+        }
       } catch (err) {
-        console.error("Error fetching recipe:", err);
+        console.error("Error fetching recipe details:", err);
         setError("Failed to load recipe. It may have been deleted.");
       } finally {
         setLoading(false);
@@ -37,31 +69,60 @@ export const RecipeDetail = () => {
     };
 
     if (id) {
-      fetchRecipe();
+      fetchRecipeAndComments();
     }
   }, [id]);
 
-  const handleLikeToggle = async () => {
-    if (!recipe || !userData) return;
+  const handleAddComment = async (content) => {
     try {
-      const response = await api.post(`/recipes/like/${recipe._id}`);
-      const isLiked = !recipe.likes.includes(userData._id);
-      setRecipe({
-        ...recipe,
-        isLiked,
-        likes: isLiked 
-          ? [...recipe.likes, userData._id] 
-          : recipe.likes.filter(id => id !== userData._id)
+      const response = await api.post('/comments', {
+        content,
+        targetType: 'Recipe',
+        targetId: id
       });
+      const newComment = {
+        ...response.data,
+        user: userData
+      };
+      setComments([newComment, ...comments]);
+      setRecipe(prev => ({ ...prev, commentsCount: (prev.commentsCount || 0) + 1 }));
     } catch (err) {
-      console.error("Error toggling like:", err);
+      console.error('Add comment error:', err);
     }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await api.delete(`/comments/${commentId}`);
+      setComments(comments.filter(c => c._id !== commentId));
+      setRecipe(prev => ({ ...prev, commentsCount: Math.max(0, (prev.commentsCount || 0) - 1) }));
+    } catch (err) {
+      console.error('Delete comment error:', err);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      await api.delete(`/recipes/${recipe._id}`);
+      setIsConfirmModalOpen(false);
+      navigate('/');
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Failed to delete recipe');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleUpdate = (updatedItem) => {
+    setRecipe(prev => ({ ...prev, ...updatedItem }));
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64" data-testid="loading-spinner">
-        <LoadingSpinner size="lg" />
+      <div className="flex justify-center items-center h-64">
+        <LoadingSpinner />
       </div>
     );
   }
@@ -76,7 +137,6 @@ export const RecipeDetail = () => {
   }
 
   const shareUrl = `${window.location.origin}/recipes/${id}`;
-  const isLiked = userData ? recipe.likes.includes(userData._id) : false;
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500" data-testid="recipe-detail">
@@ -87,6 +147,21 @@ export const RecipeDetail = () => {
         type="article"
       />
       <RecipeJSONLD recipe={recipe} />
+
+      {/* Header with Title and Actions */}
+      <div className="flex items-start justify-between px-2 md:px-0">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight flex-1">
+          {recipe.title}
+        </h1>
+        <ContentActions 
+          authorId={recipe.user?._id || recipe.user}
+          onEdit={() => setIsEditModalOpen(true)}
+          onDelete={() => setIsConfirmModalOpen(true)}
+          onReport={() => setIsReportModalOpen(true)}
+          className="ml-4"
+        />
+      </div>
+
       {/* Hero Section */}
       <div className="relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-lg">
         <OptimizedImage
@@ -97,25 +172,40 @@ export const RecipeDetail = () => {
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6 md:p-10">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight">
-            {recipe.title}
-          </h1>
           <div className="mt-4 flex items-center space-x-4 text-white/90">
             <div className="flex items-center space-x-2">
               <img
                 src={recipe.user.profilePicUrl || 'https://via.placeholder.com/40'}
                 alt={recipe.user.username}
-                className="w-8 h-8 rounded-full border-2 border-white/50"
+                className="w-10 h-10 rounded-full border-2 border-white/50 object-cover"
               />
-              <Link to={`/u/${recipe.user.username}`} className="font-bold hover:text-primary transition-colors text-white">
-                {recipe.user.username}
-              </Link>
+              <div className="flex flex-col">
+                <Link to={`/u/${recipe.user.username}`} className="font-bold hover:text-primary transition-colors text-white leading-none">
+                  {recipe.user.name}
+                </Link>
+                <span className="text-xs opacity-80">@{recipe.user.username}</span>
+              </div>
             </div>
             <span>•</span>
-            <span>{new Date(recipe.createdAt).toLocaleDateString()}</span>
+            <span className="text-sm">{new Date(recipe.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
       </div>
+
+      <EditContentModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        item={recipe}
+        type="Recipe"
+        onUpdate={handleUpdate}
+      />
+
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        targetId={recipe._id}
+        targetType="Recipe"
+      />
 
       {/* Info Bar */}
       <div className="grid grid-cols-3 gap-4">
@@ -161,7 +251,7 @@ export const RecipeDetail = () => {
           <section>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Instructions</h2>
             <div className="space-y-6">
-              {recipe.instructions && recipe.instructions.map((step, index) => (
+              {recipe.steps && recipe.steps.map((step, index) => (
                 <div key={index} className="flex space-x-4">
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                     {index + 1}
@@ -184,21 +274,26 @@ export const RecipeDetail = () => {
               </h3>
               <EngagementBar
                 isLiked={isLiked}
-                isBookmarked={false}
-                likesCount={recipe.likes.length}
-                onLikeToggle={handleLikeToggle}
+                isBookmarked={isBookmarked}
+                likesCount={likesCount}
+                commentsCount={recipe.commentsCount || comments.length}
+                onLikeToggle={() => handleLikeToggle(recipe._id)}
+                onBookmarkToggle={() => handleBookmarkToggle(recipe._id)}
                 onShare={() => setIsShareModalOpen(true)}
-                onBookmarkToggle={() => {}}
+                onCommentClick={() => {}}
               />
             </div>
 
-            <div>
+            <div id="comments">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">
                 Comments
               </h3>
-              <div className="text-center py-6">
-                <p className="text-gray-400 text-sm italic">Comments coming soon in next update.</p>
-              </div>
+              <CommentSection
+                comments={comments}
+                onAddComment={handleAddComment}
+                onDeleteComment={handleDeleteComment}
+                currentUserId={userData?._id}
+              />
             </div>
           </Card>
         </div>
@@ -208,6 +303,18 @@ export const RecipeDetail = () => {
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         url={shareUrl}
+      />
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onCancel={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete Recipe"
+        message="Are you sure you want to delete this recipe? This action cannot be undone and all associated comments will be removed."
+        confirmLabel="Delete"
+        loading={isDeleting}
+        variant="destructive"
       />
     </div>
   );

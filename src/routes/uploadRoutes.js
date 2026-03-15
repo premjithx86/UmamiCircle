@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { upload, processImageModeration } = require("../middleware/uploadMiddleware");
+const { upload, processImageModeration, processAvatarModeration } = require("../middleware/uploadMiddleware");
 const { authMiddleware } = require("../middleware/auth");
 
 /**
@@ -18,6 +18,23 @@ router.post("/", authMiddleware, upload.single("image"), processImageModeration,
   } catch (error) {
     console.error("Upload route error:", error);
     res.status(500).json({ error: "Failed to return upload response" });
+  }
+});
+
+/**
+ * @route POST /api/upload/avatar
+ * @desc Moderate and upload a profile picture (NSFW check only)
+ * @access Private
+ */
+router.post("/avatar", authMiddleware, upload.single("image"), processAvatarModeration, async (req, res) => {
+  try {
+    res.status(200).json({
+      message: "Avatar uploaded successfully.",
+      imageUrl: req.imageUrl
+    });
+  } catch (error) {
+    console.error("Avatar upload route error:", error);
+    res.status(500).json({ error: "Failed to return avatar upload response" });
   }
 });
 
