@@ -64,3 +64,10 @@ structure.txt
 *.log
 .eslintcache
 Thumbs.db
+
+# Tests
+**/*.test.jsx
+**/*.test.js
+**/*.test.ts
+**/*.test.tsx
+**/test/
