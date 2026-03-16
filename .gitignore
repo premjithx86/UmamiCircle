@@ -71,3 +71,6 @@ Thumbs.db
 **/*.test.ts
 **/*.test.tsx
 **/test/
+
+*.avif
+PROJECT_CONTEXT.md
